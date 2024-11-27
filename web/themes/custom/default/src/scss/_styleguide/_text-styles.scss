@@ -1,0 +1,131 @@
+/* ==========================================================================
+   STYLE GUIDE - TEXT STYLE
+   ========================================================================== */
+
+/* ==========================================================================
+   /!\ DO NOT USE .DsTextStyle-* IN YOUR PROJECT USE ONLY PLACEHOLDERS OR MIXINS
+   DsTextStyle- ONLY USE IN STYLEGUIDE
+   ========================================================================== */
+
+[class*='DsTextStyle-'] {
+  margin-block-end: $ds-spacings--medium;
+}
+
+[class*='DsTextStyle-heading'] {
+  margin-block-end: $ds-spacings--large;
+}
+
+/// Heading style level #0
+/// @name TextStyle-heading0
+.DsTextStyle-heading0 {
+  @extend %TextStyle-heading0;
+}
+
+/// Heading style level #1
+/// @name TextStyle-heading1
+.DsTextStyle-heading1 {
+  @extend %TextStyle-heading1;
+}
+
+/// Heading style level #2
+/// @name TextStyle-heading2
+.DsTextStyle-heading2 {
+  &.-default {
+    @extend %TextStyle-heading2;
+  }
+
+  &.-styleguide {
+    @extend %TextStyle-heading2;
+
+    padding-block-end: $ds-spacings--medium;
+    border-block-end: solid $ds-border-width-small $ds-border-color-light;
+  }
+
+  &.-alt {
+    @extend %TextStyle-heading2--alt;
+  }
+}
+
+/// Heading style level #3
+/// @name TextStyle-heading3
+.DsTextStyle-heading3 {
+  @extend %TextStyle-heading3;
+}
+
+/// Heading style level #4
+/// @name TextStyle-heading4
+.DsTextStyle-heading4 {
+  @extend %TextStyle-heading4;
+}
+
+/// Heading style level #5
+/// @name TextStyle-heading5
+.DsTextStyle-heading5 {
+  @extend %TextStyle-heading5;
+}
+
+/// Heading style level #6
+/// @name TextStyle-heading6
+.DsTextStyle-heading6 {
+  @extend %TextStyle-heading6;
+}
+
+/// Body text style level #0 (Large text)
+/// @name TextStyle-body0
+.DsTextStyle-body0 {
+  @extend %TextStyle-body0;
+}
+
+/// Body text style level #1 (Medium text)
+/// @name TextStyle-body1
+.DsTextStyle-body1 {
+  @extend %TextStyle-body1;
+}
+
+/// Body text style level #2 (Normal text)
+/// @name TextStyle-body2
+.DsTextStyle-body2 {
+  @extend %TextStyle-body2;
+}
+
+/// Body text style level #3 (Small text)
+/// @name TextStyle-body3
+.DsTextStyle-body3 {
+  @extend %TextStyle-body3;
+}
+
+/// Caption style (example: error messages,  legend or details)
+/// @name TextStyle-caption
+.DsTextStyle-caption {
+  @extend %TextStyle-caption;
+}
+
+/// Label style (example: tag labels)
+/// @name TextStyle-label
+.DsTextStyle-label {
+  @extend %TextStyle-label;
+}
+
+/// Alternate style for highlighted body text (example: blockquote)
+/// @name TextStyle-headline
+.DsTextStyle-headline {
+  @extend %TextStyle-headline;
+}
+
+/// Button style #1
+/// @name TextStyle-button--medium
+.DsTextStyle-button.-default {
+  @include TextStyle-button--medium;
+}
+
+/// Button style #2
+/// @name TextStyle-button--small
+.DsTextStyle-button.-small {
+  @include TextStyle-button--small;
+}
+
+/// Button style #1
+/// @name TextStyle-link1
+.DsTextStyle-link1 {
+  @include TextStyle-link1;
+}

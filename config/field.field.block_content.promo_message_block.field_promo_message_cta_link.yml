@@ -1,0 +1,23 @@
+uuid: 4a859c7c-2f40-46cf-9cbd-0ef1821a519b
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.promo_message_block
+    - field.storage.block_content.field_promo_message_cta_link
+  module:
+    - link
+id: block_content.promo_message_block.field_promo_message_cta_link
+field_name: field_promo_message_cta_link
+entity_type: block_content
+bundle: promo_message_block
+label: 'promo message cta link'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 17
+field_type: link

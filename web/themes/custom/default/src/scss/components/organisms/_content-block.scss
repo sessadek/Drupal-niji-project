@@ -1,0 +1,123 @@
+/* ==========================================================================
+   ContentBlock
+   ========================================================================== */
+:root {
+  --content-block-margin-block-start: #{$ds-spacings--s-wide};
+  --content-block-margin-block-end: #{$ds-spacings--s-wide};
+  --content-block-intro-grid-column: 1 / -1;
+  --content-block-inner-grid-template-columns: 1;
+  --content-block-inner-gap: 0 #{$ds-spacings--standard};
+  --content-block-contents-gap: #{$ds-spacings--large} #{$ds-spacings--standard};
+  --content-block-content-row-gap: #{$ds-spacings--large};
+  --content-block-content-column-gap: 0;
+  --content-block-list-columns: 1;
+  --content-block-list-row-gap: 0;
+  --content-block-list-column-gap: 0;
+  --content-block-inner-grid-column: 1 / -1;
+  --content-block-col-one-grid-column: 1 / -1;
+  --content-block-col-two-grid-column: 1 / -1;
+  --content-block-title-gap: #{$ds-spacings--medium};
+
+  @include breakpoint('tablet') {
+    --content-block-margin-block-start: #{$ds-spacings--x-wide};
+    --content-block-margin-block-end: #{$ds-spacings--x-wide};
+    --content-block-intro-grid-column: 1 / 5;
+    --content-block-inner-grid-template-columns: 8;
+    --content-block-inner-grid-column: 1 / 9;
+    --content-block-inner-grid-column--small: 2 / 8;
+    --content-block-inner-grid-column--medium: 1 / 9;
+    --content-block-col-one-grid-column: 1 / 5;
+    --content-block-col-two-grid-column: 5 / 9;
+    --content-block-title-gap: #{$ds-spacings--x-large};
+  }
+
+  @include breakpoint('desktop') {
+    --content-block-margin-block-start: #{$ds-spacings--xxx-wide};
+    --content-block-margin-block-end: #{$ds-spacings--xxx-wide};
+    --content-block-intro-grid-column: 1 / 7;
+    --content-block-inner-grid-template-columns: 12;
+    --content-block-inner-grid-column: 1 / 13;
+    --content-block-inner-grid-column--small: 3 / 11;
+    --content-block-inner-grid-column--medium: 2 / 12;
+    --content-block-col-one-grid-column: 1 / 7;
+    --content-block-col-two-grid-column: 7 / 13;
+  }
+}
+
+.ContentBlock {
+  @extend %ContentBlock;
+
+  position: relative;
+
+  &.-small {
+    @extend %ContentBlock--small;
+  }
+
+  &.-medium {
+    @extend %ContentBlock--medium;
+  }
+
+  &-wrapper {
+    @extend %ContentBlock-wrapper;
+  }
+
+  &-inner {
+    @extend %ContentBlock-inner;
+  }
+
+  &-title {
+    @extend %ContentBlock-title;
+  }
+
+  &-contents {
+    @extend %ContentBlock-contents;
+  }
+
+  &-content {
+    @extend %ContentBlock-content;
+  }
+
+  &-actions {
+    display: flex;
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    align-self: start;
+  }
+
+  &.-text {
+    --grid-col-count: 1;
+
+    &:has(.ContentBlock-content:only-child) {
+      @extend %ContentBlock--small;
+    }
+
+    &:has(.ContentBlock-content:nth-child(2):last-child) {
+      @include breakpoint('tablet') {
+        --grid-col-count: 2;
+      }
+    }
+
+    &:has(.ContentBlock-content:nth-child(3):last-child) {
+      @include breakpoint('tablet') {
+        --grid-col-count: 2;
+      }
+
+      @include breakpoint('desktop') {
+        --grid-col-count: 3;
+      }
+    }
+
+    .ContentBlock {
+      &-title {
+        grid-column: var(--content-block-inner-grid-column);
+      }
+
+      &-contents {
+        display: grid;
+        grid-template-columns: repeat(var(--grid-col-count), 1fr);
+        gap: #{$ds-spacings--wide} #{$ds-spacings--xx-large};
+        align-items: start;
+      }
+    }
+  }
+}

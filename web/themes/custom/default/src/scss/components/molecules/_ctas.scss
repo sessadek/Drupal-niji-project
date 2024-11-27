@@ -1,0 +1,14 @@
+/* ==========================================================================
+   Ctas
+   ========================================================================== */
+.Ctas {
+  &-inner {
+    display: grid;
+    gap: $ds-spacings--medium;
+
+    @include breakpoint('mobile-wide') {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}

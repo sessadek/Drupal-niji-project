@@ -1,0 +1,10 @@
+uuid: fe5afd10-cd79-4362-a360-0c275b21a504
+langcode: en
+status: true
+dependencies: {  }
+id: reinsurance
+label: Réassurance
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

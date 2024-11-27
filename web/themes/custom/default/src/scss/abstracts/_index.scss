@@ -1,0 +1,32 @@
+/* ==========================================================================
+   ABSTRACTS
+   ========================================================================== */
+
+
+/* Variables SCSS
+   ========================================================================== */
+@import './variables-scss';
+
+/* Mixins
+   ========================================================================== */
+
+@import './mixins/breakpoints';
+@import './mixins/helpers';
+@import './mixins/layout';
+@import './mixins/text-styles';
+@import './mixins/buttons';
+@import './mixins/link-simple';
+
+/* Placeholders
+   ========================================================================== */
+@import "placeholders/layout";
+@import "placeholders/text-styles";
+@import "placeholders/images";
+@import "placeholders/atoms/buttons";
+@import "placeholders/atoms/caption";
+@import "placeholders/atoms/link-simple";
+@import "placeholders/atoms/tags";
+@import "placeholders/molecules/editorial-wysiwyg";
+@import "placeholders/molecules/messages";
+@import "placeholders/molecules/tabs";
+@import "placeholders/organisms/content-block";

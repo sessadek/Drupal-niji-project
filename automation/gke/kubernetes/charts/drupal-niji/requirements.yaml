@@ -1,0 +1,17 @@
+dependencies:
+- name: mariadb
+  version: "11.3.0"
+  repository: https://charts.bitnami.com/bitnami/
+  condition: mariadb.enabled
+- name: redis
+  version: "17.1.4"
+  repository: https://charts.bitnami.com/bitnami/
+  condition: redis.enabled
+- name: phpmyadmin
+  version: "10.3.3"
+  repository: https://charts.bitnami.com/bitnami/
+  condition: phpmyadmin.enabled
+- name: mailhog
+  version: "3.2.1"
+  repository: https://codecentric.github.io/helm-charts/
+  condition: mailhog.enabled

@@ -1,0 +1,90 @@
+@use 'sass:math';
+
+/* ==========================================================================
+   Burger Menu
+   ========================================================================== */
+
+// source: https://codepen.io/Ricozor/pen/XWJPVZM
+// defined your data here
+$burgerWidth: 1rem;
+$burgerHeight: 1rem;
+$burgerLineWidth: 1rem;
+$burgerLinesHeight: .75rem;
+$burgerLineHeight: .125rem;
+$burgerBackground: transparent;
+$burgerLineBackground: currentColor;
+
+// nothing to do next
+$burgerLineLeft: math.div($burgerWidth - $burgerLineWidth, 2);
+$burgerLineTop: math.div($burgerHeight - $burgerLinesHeight, 2);
+$burgerLineMiddle: math.div($burgerHeight - $burgerLineHeight, 2);
+$burgerLineBottom: $burgerLineTop + $burgerLinesHeight - $burgerLineHeight;
+$burgerDeltaLines: math.div($burgerLinesHeight - 3 * $burgerLineHeight, 2);
+
+.BurgerMenu {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  width: $burgerWidth;
+  height: $burgerHeight;
+  padding: 0;
+  border: 0;
+  background: $burgerBackground;
+  color: inherit;
+  cursor: pointer;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-appearance: none;
+
+  @include breakpoint($main-menu-breakpoint-menu-display) {
+    display: none;
+  }
+
+  &::before,
+  &::after,
+  span {
+    content: '';
+    position: absolute;
+    inset-inline-start: $burgerLineLeft;
+    display: block;
+    width: $burgerLineWidth;
+    height: $burgerLineHeight;
+    background: $burgerLineBackground;
+    opacity: 1;
+    transform: rotate(0deg);
+    transform-origin: 50% 50%;
+    transition: $ds-transition-speed-fast;
+  }
+
+  &::before {
+    inset-block-start: $burgerLineTop;
+  }
+
+  span {
+    inset-block-start: $burgerLineMiddle;
+    overflow: hidden;
+    text-indent: -99em;
+  }
+
+  &::after {
+    inset-block-start: $burgerLineBottom;
+  }
+
+  [aria-expanded="true"] &,
+  &[aria-expanded="true"] {
+    &::before {
+      inset-block-start: $burgerLineMiddle;
+      transform: rotate(45deg);
+    }
+
+    span {
+      inset-inline-start: 0;
+      width: 0;
+      opacity: 0;
+    }
+
+    &::after {
+      inset-block-start: $burgerLineMiddle;
+      transform: rotate(-45deg);
+    }
+  }
+}

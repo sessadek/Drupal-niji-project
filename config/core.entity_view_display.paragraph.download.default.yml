@@ -1,0 +1,61 @@
+uuid: 471f277a-ecc8-45f0-ab9f-81201bc76cc3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.download.field_doc
+    - field.field.paragraph.download.field_media
+    - field.field.paragraph.download.field_subtitle
+    - field.field.paragraph.download.field_text
+    - field.field.paragraph.download.field_title
+    - paragraphs.paragraphs_type.download
+  module:
+    - entity_reference_revisions
+    - text
+id: paragraph.download.default
+targetEntityType: paragraph
+bundle: download
+mode: default
+content:
+  field_doc:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_media:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  field_subtitle:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_text:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_title:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

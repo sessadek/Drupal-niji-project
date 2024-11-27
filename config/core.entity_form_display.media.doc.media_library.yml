@@ -1,0 +1,26 @@
+uuid: c3c4bda1-b45f-464f-a91a-0e4ed36bfc2a
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.media.media_library
+    - field.field.media.doc.field_media_file
+    - media.type.doc
+id: media.doc.media_library
+targetEntityType: media
+bundle: doc
+mode: media_library
+content:
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  field_media_file: true
+  status: true
+  uid: true

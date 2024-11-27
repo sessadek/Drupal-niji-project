@@ -1,0 +1,10 @@
+uuid: ee5e67b1-8207-40b6-ab4a-1b0362c823af
+langcode: en
+status: true
+dependencies: {  }
+id: homepage_hero_banner
+label: "Header - Page d'accueil"
+icon_uuid: null
+icon_default: null
+description: "Type de paragraph permettant l'affichage du header de la page d'accueil."
+behavior_plugins: {  }

@@ -1,0 +1,93 @@
+/* ==========================================================================
+   Link Simple
+   ========================================================================== */
+$link-simple-arrow-size: 1rem;
+$link-simple-gap: px-to-rem(10);
+
+:root {
+  --link-simple-color: #{$ds-colors-grayscale-black};
+  --link-simple-color--hover: #{$ds-colors-brand-secondary};
+  --link-simple-color--active: #{$ds-colors-brand-secondary-600};
+  --link-simple-arrow-color: #{$ds-colors-brand-secondary};
+  --link-simple-arrow-color--hover: #{$ds-colors-brand-secondary-800};
+  --link-simple-arrow-color--active: #{$ds-colors-brand-secondary-600};
+}
+
+@mixin LinkSimple {
+  @include TextStyle-link1;
+  @include LinkUnderline;
+
+  --_color: var(--link-simple-color);
+  --_arrow-color: var(--link-simple-arrow-color);
+
+  display: inline-flex;
+  gap: $link-simple-gap;
+  color: var(--_color);
+  transition: $ds-transition-speed-fast;
+
+  &::before,
+  &::after {
+    content: '';
+    display: none;
+    align-items: center;
+    box-sizing: content-box;
+    width: $link-simple-arrow-size;
+    aspect-ratio: 1;
+    background-color: var(--link-simple-arrow-color);
+    background-size: contain;
+    mask-image: url('../images/icons/big-long-arrow.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: auto;
+  }
+
+  &[disable] {
+    opacity: .5;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus-visible,
+  a:hover &,
+  a:focus-visible &,
+  &:active,
+  a:active & {
+    text-decoration: none;
+  }
+
+  &:hover,
+  &:focus-visible,
+  a:hover &,
+  a:focus-visible & {
+    --_color: var(--link-simple-color--hover);
+    --_arrow-color: var(--link-simple-arrow-color--hover);
+  }
+
+  &:active,
+  a:active & {
+    --_color: var(--link-simple-color--active);
+    --_arrow-color: var(--link-simple-arrow-color--active);
+  }
+
+  [data-theme="dark"] & {
+    --link-simple-color: #{$ds-colors-grayscale-white};
+    --link-simple-color--hover: #{$ds-colors-grayscale-white};
+    --link-simple-color--active: #{$ds-colors-grayscale-white};
+    --link-simple-arrow-color: #{$ds-colors-grayscale-white};
+    --link-simple-arrow-color--hover: #{$ds-colors-grayscale-white};
+    --link-simple-arrow-color--active: #{$ds-colors-grayscale-white};
+  }
+}
+
+@mixin LinkSimple--arrowLeft {
+  &::before {
+    display: block;
+    rotate: 180deg;
+  }
+}
+
+@mixin LinkSimple--arrowRight {
+  &::after {
+    display: block;
+  }
+}

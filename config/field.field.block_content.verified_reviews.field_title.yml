@@ -1,0 +1,21 @@
+uuid: 0c7c3347-703c-49e1-b62f-ca6a528fdbdf
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.verified_reviews
+    - field.storage.block_content.field_title
+id: block_content.verified_reviews.field_title
+field_name: field_title
+entity_type: block_content
+bundle: verified_reviews
+label: Titre
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 'Bloc "Avis vérifiés"'
+default_value_callback: ''
+settings: {  }
+field_type: string

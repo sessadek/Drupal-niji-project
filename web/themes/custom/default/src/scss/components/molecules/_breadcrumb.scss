@@ -1,0 +1,56 @@
+/* ==========================================================================
+   Breadcrumb
+   ========================================================================== */
+$breadcrumb-breakpoint-display: 'tablet';
+$breadcrumb-row-gap: 0;
+$breadcrumb-column-gap: $ds-spacings--semi;
+
+.BreadcrumbWrapper {
+  @extend %PageWrapper;
+
+  margin-block: $ds-spacings--standard $ds-spacings--semi;
+
+  nav {
+    @extend %PageInner;
+
+    color: var(--text-color);
+
+    .HeroBanner & {
+      width: 100%;
+    }
+
+    ol {
+      @extend %TextStyle-body3;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: $breadcrumb-row-gap $breadcrumb-column-gap;
+      line-height: 1;
+
+      li {
+        display: flex;
+        gap: $breadcrumb-column-gap;
+        align-items: center;
+
+        &::after {
+          content: '>';
+        }
+
+        a {
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        &:last-child {
+          font-weight: 700;
+          text-decoration: underline;
+
+          &::after {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

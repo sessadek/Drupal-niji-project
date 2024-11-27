@@ -1,0 +1,24 @@
+uuid: ca6ca083-1808-4c15-926a-c61e7c752c71
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text_level_2
+    - filter.format.classic
+    - paragraphs.paragraphs_type.homepage_hero_banner
+  module:
+    - text
+id: paragraph.homepage_hero_banner.field_text_level_2
+field_name: field_text_level_2
+entity_type: paragraph
+bundle: homepage_hero_banner
+label: 'Texte - Niveau 2'
+description: "Texte affiché sur la 2ème ligne de titre du header de la page d'accueil.<br>\r\nPour forcer un passage à la ligne suivante, utilisez la balise &lt;br&gt;."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - classic
+field_type: text

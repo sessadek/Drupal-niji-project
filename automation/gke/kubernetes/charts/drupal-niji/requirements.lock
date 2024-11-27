@@ -1,0 +1,15 @@
+dependencies:
+- name: mariadb
+  repository: https://charts.bitnami.com/bitnami/
+  version: 11.3.0
+- name: redis
+  repository: https://charts.bitnami.com/bitnami/
+  version: 17.1.4
+- name: phpmyadmin
+  repository: https://charts.bitnami.com/bitnami/
+  version: 10.3.3
+- name: mailhog
+  repository: https://codecentric.github.io/helm-charts/
+  version: 3.2.1
+digest: sha256:973e42825986896767ed538dc90283f25410c8cbee3fce11c888f85176862cab
+generated: "2022-09-13T11:41:49.10279+02:00"

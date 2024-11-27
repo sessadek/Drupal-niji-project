@@ -1,0 +1,309 @@
+/* ==========================================================================
+   Editorial WYSIWYG - Placeholders
+   ========================================================================== */
+
+:root {
+  --table-border: solid #{$ds-border-width-small} #{$ds-colors-brand-primary-100};
+  --table-border-thead: solid #{$ds-border-width-small} #{$ds-colors-grayscale-white};
+  --editorial-wysiwyg-margin-block: #{$ds-spacings--medium};
+
+  @include breakpoint('tablet') {
+    --editorial-wysiwyg-margin-block: #{$ds-spacings--x-large};
+  }
+}
+
+
+%EditorialWysiwyg {
+  @extend %TextStyle-body2;
+
+  --_list-margin-inline-start: #{$ds-spacings--x-large};
+
+  ul, ol {
+    margin-inline-start: var(--_list-margin-inline-start);
+    list-style: none;
+
+    li {
+      --_list-margin-inline-start: #{$ds-spacings--standard};
+      --_list-margin-block-end: #{$ds-spacings--standard};
+
+      position: relative;
+      padding-inline-start: $ds-spacings--medium + $ds-spacings--semi;
+
+      &::before {
+        position: absolute;
+        width: $ds-spacings--medium;
+      }
+
+      &:not(:last-child) li:last-child {
+        margin-block-end: $ds-spacings--medium;
+      }
+    }
+
+    li li,
+    li + li {
+      margin-block-start: $ds-spacings--semi;
+    }
+  }
+
+  ul {
+    li {
+      &::before {
+        content: '';
+        inset: 0.75em auto auto 0;
+        height: $ds-border-width-medium;
+        background-color: var(--text-color-secondary);
+        translate: 0 -50%;
+      }
+    }
+  }
+
+  ol {
+    counter-reset: ol-count;
+
+    li {
+      counter-increment: ol-count;
+
+      &::before {
+        content: counter(ol-count) '.';
+        inset: 0 auto auto 0;
+        font-weight: 700;
+        color: var(--text-color-secondary);
+        text-align: end;
+      }
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol,
+  .Table-wrapper,
+  table {
+    margin-block-end: var(--editorial-wysiwyg-margin-block);
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+
+  h2 {
+    @extend %TextStyle-heading2;
+  }
+
+  h3 {
+    @extend %TextStyle-heading3;
+  }
+
+  h4 {
+    @extend %TextStyle-heading4;
+  }
+
+  h5 {
+    @extend %TextStyle-heading5;
+  }
+
+  h6 {
+    @extend %TextStyle-heading6;
+  }
+
+  p {
+    --editorial-wysiwyg-margin-block: #{$ds-spacings--medium}
+  }
+
+  a:not(.Button, .LinkSimple) {
+    @include LinkUnderline;
+
+    color: var(--link-color);
+
+    &:hover {
+      color: var(--link-color--hover);
+      text-decoration: none;
+    }
+
+    &:visited {
+      color: var(--link-color--visited);
+    }
+  }
+
+  strong {
+    font-weight: 700;
+  }
+
+  &--mediumlight,
+  .-mediumlight,
+  &.-mediumlight,
+  .-mediumlight & { // not used yet
+    @extend %TextStyle-body2;
+  }
+
+  &--lowlight,
+  .-lowlight,
+  &.-lowlight,
+  .-lowlight & { // not used yet
+    @extend %TextStyle-body3;
+  }
+
+  blockquote,
+  .Table-wrapper,
+  table,
+  .-important {
+    clear: both;
+  }
+
+  blockquote {
+    @extend %TextStyle-heading5;
+
+    position: relative;
+    margin-block: $ds-spacings--large;
+    quotes: "“" "”" "‘" "’";
+    color: $ds-colors-brand-primary;
+
+    &::before {
+      content: open-quote;
+    }
+
+    &::after {
+      content: close-quote;
+    }
+  }
+
+  &--important,
+  .-important {
+    @extend %TextStyle-body0;
+
+    margin-block: $ds-spacings--xxx-large;
+    font-weight: 700;
+
+    @include breakpoint('tablet') {
+      margin-block-end: $ds-spacings--wide;
+      text-align: center;
+    }
+  }
+
+  .Table-wrapper {
+    --_sticky-block-start: calc(var(--site-header-height) + var(--drupal-displace-offset-top));
+
+    position: relative;
+    width: min($ds-max-width-page-inner, 100vw - (var(--page-inner-padding-inline) + var(--page-wrapper-margin-inline)) * 2 );
+    margin-block-end: $ds-spacings--large;
+
+    &.-hasHorizontalOverflow {
+      --_sticky-block-start: 0;
+
+      overflow: auto;
+      max-height: 65vh;
+
+      thead {
+        th {
+          border-inline-end: var(--table-border-thead);
+
+          &:first-child {
+            &::after {
+              content: '';
+              position: absolute;
+              inset: 0 #{-1 * $ds-border-width-small} 0 auto;
+              border-inline-end: var(--table-border-thead);
+            }
+          }
+        }
+      }
+    }
+
+    table {
+      margin-block: 0;
+    }
+  }
+
+  table {
+    all: revert;
+    min-width: 100%;
+    margin-block: $ds-spacings--large;
+    border-collapse: collapse;
+    background: $ds-colors-grayscale-white;
+    line-height: 1.2;
+    text-align: start;
+
+    th,
+    td {
+      min-width: 5rem;
+      padding: $ds-spacings--medium $ds-spacings--standard;
+      border-inline-end: var(--table-border);
+    }
+
+    th {
+      font-weight: 700;
+      color: $ds-text-color-dark;
+
+      &:first-child {
+        position: var(--th-position, static);
+        inset-inline-start: 0;
+      }
+    }
+
+    td {
+      font-size: var(--ds-font-size-200);
+    }
+
+    thead {
+      inset-block-start: var(--_sticky-block-start);
+      z-index: 2;
+      border-inline-start: var(--table-border-thead);
+
+      th {
+        vertical-align: middle;
+        padding: $ds-spacings--medium $ds-spacings--standard;
+        background: $ds-colors-brand-primary;
+        color: $ds-text-color-white;
+        text-align: center;
+      }
+    }
+
+    tbody {
+      border-block-end: var(--table-border);
+      border-inline-start: var(--table-border);
+
+      th {
+        background: $ds-colors-brand-primary-200;
+      }
+    }
+
+    tr + tr {
+      border-block-start: var(--table-border);
+    }
+
+    caption {
+      @extend %Caption;
+      @extend %Caption-inner;
+
+      caption-side: bottom;
+    }
+  }
+
+  &--theadSticky,
+  .-theadSticky &,
+  .-freezeHeaderLine & {
+    thead {
+      position: sticky;
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: -1 * $ds-border-width-small 0;
+        border-block-start: var(--table-border-thead);
+        border-block-end: var(--table-border);
+        pointer-events: none;
+      }
+    }
+  }
+
+  &--thSticky,
+  .-thSticky &,
+  .-freezeHeaderColumn & {
+    --th-position: sticky;
+  }
+}

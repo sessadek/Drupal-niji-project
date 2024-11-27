@@ -1,0 +1,61 @@
+uuid: 9f585884-8ed1-41c6-8990-9077e4c241e0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_tips
+    - paragraphs.paragraphs_type.tips
+    - paragraphs.paragraphs_type.tips_and_tricks
+  module:
+    - entity_reference_revisions
+id: paragraph.tips_and_tricks.field_tips
+field_name: field_tips
+entity_type: paragraph
+bundle: tips_and_tricks
+label: Astuce
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      tips: tips
+    negate: 0
+    target_bundles_drag_drop:
+      cta:
+        weight: 12
+        enabled: false
+      download:
+        weight: 13
+        enabled: false
+      downloads:
+        weight: 14
+        enabled: false
+      image_text_column:
+        weight: 15
+        enabled: false
+      media_text:
+        weight: 16
+        enabled: false
+      reinsurance:
+        weight: 17
+        enabled: false
+      reinsurance_item:
+        weight: 18
+        enabled: false
+      text:
+        weight: 19
+        enabled: false
+      text_content:
+        weight: 20
+        enabled: false
+      tips:
+        weight: 21
+        enabled: true
+      tips_and_tricks:
+        weight: 22
+        enabled: false
+field_type: entity_reference_revisions

@@ -1,0 +1,10 @@
+uuid: 14939c92-a814-4f50-9100-abef71029c99
+langcode: en
+status: true
+dependencies: {  }
+id: reinsurance_item
+label: 'Réassurance Item'
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

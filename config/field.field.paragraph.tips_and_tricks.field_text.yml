@@ -1,0 +1,24 @@
+uuid: a475cccb-faef-4e27-b344-724b4a46e137
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - filter.format.ckeditor_5
+    - paragraphs.paragraphs_type.tips_and_tricks
+  module:
+    - text
+id: paragraph.tips_and_tricks.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: tips_and_tricks
+label: Texte
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - ckeditor_5
+field_type: text_long

@@ -1,0 +1,110 @@
+/* ==========================================================================
+   VARIABLES CSS
+   ========================================================================== */
+
+// /!\ always prefer SASS vars, use CSS vars only if you needd to use context override or change value in js
+
+:root {
+  // colors
+  // colors-brand
+  --ds-colors-brand-primary: #{$ds-colors-brand-primary};
+  --ds-colors-brand-secondary: #{$ds-colors-brand-secondary};
+  --ds-colors-brand-tertiary: #{$ds-colors-brand-tertiary};
+  --ds-colors-brand-accent-1: #{$ds-colors-brand-accent-1};
+
+  // colors-grayscale
+  --ds-colors-grayscale-white: #{$ds-colors-grayscale-white};
+  --ds-colors-grayscale-50: #{$ds-colors-grayscale-050};
+  --ds-colors-grayscale-100: #{$ds-colors-grayscale-100};
+  --ds-colors-grayscale-200: #{$ds-colors-grayscale-200};
+  --ds-colors-grayscale-300: #{$ds-colors-grayscale-300};
+  --ds-colors-grayscale-400: #{$ds-colors-grayscale-400};
+  --ds-colors-grayscale-500: #{$ds-colors-grayscale-500};
+  --ds-colors-grayscale-600: #{$ds-colors-grayscale-600};
+  --ds-colors-grayscale-700: #{$ds-colors-grayscale-700};
+  --ds-colors-grayscale-800: #{$ds-colors-grayscale-800};
+  --ds-colors-grayscale-900: #{$ds-colors-grayscale-900};
+  --ds-colors-grayscale-black: #{$ds-colors-grayscale-black};
+
+  // colors-ui
+  --ds-colors-ui-error: #{$ds-colors-ui-error};
+  --ds-colors-ui-success: #{$ds-colors-ui-success};
+  --ds-colors-ui-warning: #{$ds-colors-ui-warning};
+  --ds-colors-ui-info: #{$ds-colors-ui-info};
+
+  // border
+  // border-color
+  --ds-border-color-light: #{$ds-border-color-light};
+  --ds-border-color-medium: #{$ds-border-color-medium};
+  --ds-border-color-dark: #{$ds-border-color-dark}; // Not used yet
+
+  // border-width
+  --ds-border-width-none: #{$ds-border-width-none};
+  --ds-border-width-small: #{$ds-border-width-small};
+  --ds-border-width-medium: #{$ds-border-width-medium};
+  --ds-border-width-large: #{$ds-border-width-large};
+
+  // radius
+  --ds-radius-none: #{$ds-radius-none};
+  --ds-radius-small: #{$ds-radius-small}; // 4px
+  --ds-radius-medium: #{$ds-radius-medium}; // 12px
+  --ds-radius-large: #{$ds-radius-large}; // 24px
+  --ds-radius-round: #{$ds-radius-round}; // /!\ Oval if not square shape
+  --ds-radius-circle: #{$ds-radius-circle};
+
+  // fonts
+  // text-color
+  --ds-text-color-white: #{$ds-text-color-white};
+  --ds-text-color-medium: #{$ds-text-color-medium};
+  --ds-text-color-grey: #{$ds-text-color-grey};
+  --ds-text-color-dark: #{$ds-text-color-dark};
+  --ds-text-color-black: #{$ds-text-color-black};
+
+  // font-family
+  --ds-font-family-main: #{$ds-font-family-main};
+  --ds-font-family-second: #{$ds-font-family-second};
+
+  // font-size
+  --ds-font-size-900: #{$ds-font-size-900};
+  --ds-font-size-800: #{$ds-font-size-800};
+  --ds-font-size-700: #{$ds-font-size-700};
+  --ds-font-size-600: #{$ds-font-size-600};
+  --ds-font-size-500: #{$ds-font-size-500};
+  --ds-font-size-400: #{$ds-font-size-400};
+  --ds-font-size-350: #{$ds-font-size-350};
+  --ds-font-size-300: #{$ds-font-size-300};
+  --ds-font-size-200: #{$ds-font-size-200};
+  --ds-font-size-100: #{$ds-font-size-100};
+  --ds-font-size-050: #{$ds-font-size-050};
+
+  // layout
+  --ds-max-width-page-wrapper: #{$ds-max-width-page-wrapper};
+  --ds-max-width-page-inner: #{$ds-max-width-page-inner};
+
+  // spacing
+  --ds-spacings--xxx-wide: #{$ds-spacings--xxx-wide}; // 140px
+  --ds-spacings--xx-wide: #{$ds-spacings--xx-wide}; // 112px
+  --ds-spacings--x-wide: #{$ds-spacings--x-wide}; // 96px
+  --ds-spacings--wide: #{$ds-spacings--wide}; // 80px
+  --ds-spacings--xxx-large: #{$ds-spacings--xxx-large}; // 64px
+  --ds-spacings--xx-large: #{$ds-spacings--xx-large}; // 48px
+  --ds-spacings--x-large: #{$ds-spacings--x-large}; // 40px
+  --ds-spacings--large: #{$ds-spacings--large}; // 32px
+  --ds-spacings--medium: #{$ds-spacings--medium}; // 24px
+  --ds-spacings--standard: #{$ds-spacings--standard}; // 16px
+  --ds-spacings--semi: #{$ds-spacings--semi}; // 12px
+  --ds-spacings--small: #{$ds-spacings--small}; // 8px
+  --ds-spacings--x-small: #{$ds-spacings--x-small}; // 6px
+  --ds-spacings--xx-small: #{$ds-spacings--xx-small}; // 4px
+  --ds-spacings--xxx-small: #{$ds-spacings--xxx-small}; // 2px
+
+  // transition
+  --ds-transition-speed-fast: #{$ds-transition-speed-fast};
+  --ds-transition-speed-standard: #{$ds-transition-speed-standard};
+  --ds-transition-speed-medium: #{$ds-transition-speed-medium};
+  --ds-transition-speed-slow: #{$ds-transition-speed-slow};
+  --ds-transition-speed-x-slow: #{$ds-transition-speed-x-slow};
+
+  // transition property for closable items
+  --ds-transition-closable-item: #{$ds-transition-closable-item};
+}

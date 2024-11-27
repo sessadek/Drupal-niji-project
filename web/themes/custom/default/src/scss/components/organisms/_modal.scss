@@ -1,0 +1,166 @@
+@use 'sass:color';
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+$modal-backdrop-color: $ds-colors-brand-primary;
+$modal-backdrop-opacity: .6;
+$modal-padding: $ds-spacings--medium;
+$modal-padding--small: $ds-spacings--standard;
+
+:root {
+  --modal-bg-color: #{$ds-bg-color-white};
+  --modal-centered-width: 90vw;
+  --modal-centered-height: calc(90vh - var(--drupal-displace-offset-top));
+  --modal-overflow: hidden;
+  --modal-main-overflow-y: auto;
+  --modal-top-height: #{px-to-rem($modal-top-height)};
+  --modal-right-side-width: 100%;
+
+  @include breakpoint('tablet') {
+    --modal-right-side-width: #{px-to-rem(414)};
+  }
+}
+
+@keyframes toggle-modal-centered {
+  0% {
+    opacity: 0;
+    scale: 0;
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes toggle-modal-right-side {
+  0% {
+    translate: 100% 0;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes toggle-modal-backdrop {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: $modal-backdrop-opacity;
+  }
+}
+
+.Modal {
+  overflow: var(--modal-overflow);
+  padding: 0;
+  border: 0;
+  background: var(--modal-bg-color);
+
+  &.-noTop {
+    --modal-top-height: 0;
+  }
+
+  &.-sliderPicture {
+    --modal-overflow: visible;
+    --modal-main-overflow-y: visible;
+    --modal-bg-color: #{color.change($modal-backdrop-color, $alpha: .5)};
+
+  }
+
+  &.-centered {
+    inset: 0;
+    width: var(--modal-centered-width);
+    height: var(--modal-centered-height);
+  }
+
+  &.-rightSide {
+    inset: var(--drupal-displace-offset-top) 0 0 auto;
+    width: var(--modal-right-side-width);
+    max-width: 100%;
+    height: calc(100% - var(--drupal-displace-offset-top));
+    max-height: none;
+
+    --_aniamtion-name: toggle-modal-right-side;
+  }
+
+  &[open] {
+    display: grid;
+  }
+
+  &.-isOpening,
+  &.-isClosing {
+    &,
+    &::backdrop {
+      animation: var(--_aniamtion-name, toggle-modal-centered) $ds-transition-speed-standard forwards;
+    }
+
+    &::backdrop {
+      animation-name: toggle-modal-backdrop;
+    }
+  }
+
+  &.-isClosing {
+    &,
+    &::backdrop {
+      animation-direction: reverse;
+    }
+  }
+
+  &::backdrop {
+    background: $modal-backdrop-color;
+    opacity: $modal-backdrop-opacity;
+  }
+
+  &-inner {
+    position: relative;
+    display: grid;
+    overflow: var(--modal-overflow);
+  }
+
+  &-top {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 1;
+    flex: 0 0 auto;
+    height: var(--modal-top-height);
+    background: var(--modal-bg-color);
+  }
+
+  &-close {
+    @extend %ButtonClose;
+
+    --button-padding-inline: #{$ds-spacings--semi};
+
+    position: absolute;
+    inset: 0 0 auto auto;
+  }
+
+  &-main {
+    display: flex;
+    flex-direction: column;
+    overflow-y: var(--modal-main-overflow-y);
+    margin-block-start: var(--modal-top-height);
+
+    > * {
+      flex: 0 0 auto;
+    }
+  }
+
+  &-title {
+    @extend %TextStyle-heading5;
+
+    margin-block-end: $ds-spacings--medium;
+  }
+
+  &-actions {
+    margin-block-start: $ds-spacings--standard;
+  }
+}
+
+body.-modalIsExpanded {
+  overflow: hidden;
+}

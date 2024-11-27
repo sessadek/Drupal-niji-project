@@ -1,0 +1,24 @@
+{% set paragraphClasses = [
+  '-mediaText',
+] %}
+{% set attributes = attributes.addClass(paragraphClasses) %}
+
+{% extends '@default/paragraphs/paragraph-parent.html.twig' %}
+
+{% block content %}
+  {% if content.field_media | render %}
+    <div class="ContentBlock-media">
+      {{ content.field_media }}
+    </div>
+  {% endif %}
+  {% if content.field_text | render %}
+    <div class="ContentBlock-content">
+      {{ content.field_text }}
+    </div>
+  {% endif %}
+  {% if content.field_ctas | render %}
+    <div class="ContentBlock-actions">
+      {{ content.field_ctas }}
+    </div>
+  {% endif %}
+{% endblock content %}

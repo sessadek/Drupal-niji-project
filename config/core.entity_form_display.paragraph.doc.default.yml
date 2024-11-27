@@ -1,0 +1,33 @@
+uuid: 78bb9e37-f271-406a-a86e-f1c926e49962
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.doc.field_file
+    - field.field.paragraph.doc.field_title
+    - paragraphs.paragraphs_type.doc
+  module:
+    - media_library
+id: paragraph.doc.default
+targetEntityType: paragraph
+bundle: doc
+mode: default
+content:
+  field_file:
+    type: media_library_widget
+    weight: 2
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

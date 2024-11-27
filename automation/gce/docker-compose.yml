@@ -1,0 +1,131 @@
+version: "3"
+
+networks:
+  front:
+    name: ${FRONT_NETWORK}
+    external: true
+  back:
+    driver: bridge
+
+volumes:
+  database:
+  files:
+  tmp:
+
+services:
+
+  mariadb:
+    restart: unless-stopped
+    image: wodby/mariadb:${MARIADB_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal
+    networks:
+      - back
+    volumes:
+      - database:/var/lib/mysql:delegated
+    healthcheck:
+      test: "mysql --user=drupal --password=drupal --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 1s
+      retries: 5
+
+  php:
+    restart: unless-stopped
+    image: ${PHP_IMAGE}:${TAG}
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S mailhog:1025
+      PHP_FPM_CLEAR_ENV: "no"
+      COMPOSER_HOME: /tmp
+      HOME: /tmp
+      DB_HOST: mariadb
+      DB_NAME: drupal
+      DB_USER: drupal
+      DB_PASSWORD: drupal
+      REDIS_HOST: redis
+      APP_HASH_SALT: ${APP_HASH_SALT}
+      PHP_MAX_EXECUTION_TIME: 0
+    networks:
+      - back
+    volumes:
+      - tmp:/tmp:delegated
+      - files:/var/www/html/web/sites/default/files:rw
+
+  apache:
+    restart: unless-stopped
+    image: ${APACHE_IMAGE}:${TAG}
+    depends_on:
+      - php
+    environment:
+      APACHE_LOG_LEVEL: debug
+      APACHE_VHOST_PRESET: php
+      APACHE_BACKEND_HOST: php
+      APACHE_SERVER_ROOT: /var/www/html/web
+      APACHE_SERVER_NAME: ${APP_DOMAIN}
+    networks:
+      - front
+      - back
+    volumes:
+      - files:/var/www/html/web/sites/default/files:rw
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${FRONT_NETWORK}"
+      - "traefik.http.routers.drupal-${DOCKER_COMPOSE_PROJECT}.tls.certresolver=ovhresolver"
+      - "traefik.http.routers.drupal-${DOCKER_COMPOSE_PROJECT}.entrypoints=websecure"
+      - "traefik.http.routers.drupal-${DOCKER_COMPOSE_PROJECT}.rule=Host(`${DRUPAL_SERVICE_DNS}`)"
+      - "traefik.http.routers.drupal-${DOCKER_COMPOSE_PROJECT}.service=drupal-service-${DOCKER_COMPOSE_PROJECT}"
+      - "traefik.http.services.drupal-service-${DOCKER_COMPOSE_PROJECT}.loadbalancer.server.port=80"
+
+  varnish:
+    restart: unless-stopped
+    image: wodby/drupal-varnish:${VARNISH_VERSION}
+    depends_on:
+      - apache
+    environment:
+      VARNISH_CONFIG_PRESET: drupal
+      VARNISH_SECRET: secret
+      VARNISH_BACKEND_HOST: apache
+      VARNISH_BACKEND_PORT: 80
+    networks:
+      - front
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${FRONT_NETWORK}"
+      - "traefik.http.routers.varnish-${DOCKER_COMPOSE_PROJECT}.tls.certresolver=ovhresolver"
+      - "traefik.http.routers.varnish-${DOCKER_COMPOSE_PROJECT}.entrypoints=websecure"
+      - "traefik.http.routers.varnish-${DOCKER_COMPOSE_PROJECT}.rule=Host(`${VARNISH_SERVICE_DNS}`)"
+      - "traefik.http.routers.varnish-${DOCKER_COMPOSE_PROJECT}.service=varnish-service"
+      - "traefik.http.services.varnish-service.loadbalancer.server.port=6081"
+
+  redis:
+    restart: unless-stopped
+    image: wodby/redis:${REDIS_VERSION}
+    networks:
+      - back
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 3s
+      timeout: 1s
+      retries: 5
+
+  mailhog:
+    restart: unless-stopped
+    image: mailhog/mailhog:${MAILHOG_VERSION}
+    networks:
+      - front
+      - back
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${FRONT_NETWORK}"
+      - "traefik.http.routers.mailhog-${DOCKER_COMPOSE_PROJECT}.tls.certresolver=ovhresolver"
+      - "traefik.http.routers.mailhog-${DOCKER_COMPOSE_PROJECT}.entrypoints=websecure"
+      - "traefik.http.routers.mailhog-${DOCKER_COMPOSE_PROJECT}.rule=Host(`${MAILHOG_SERVICE_DNS}`)"
+      - "traefik.http.routers.mailhog-${DOCKER_COMPOSE_PROJECT}.service=mailhog-service"
+      - "traefik.http.services.mailhog-service.loadbalancer.server.port=8025"

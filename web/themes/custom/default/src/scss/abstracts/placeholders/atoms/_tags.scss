@@ -1,0 +1,36 @@
+/* ==========================================================================
+   Tag Labels - Placeholders
+   ========================================================================== */
+
+%Tag {
+  @extend %Button;
+  @extend %Button--small;
+
+  --button-text-color: var(--tag-text-color);
+  --button-text-color--hover: var(--tag-text-color--hover);
+  --button-text-color--active: var(--tag-text-color--active);
+  --button-bg-color: var(--tag-bg-color);
+  --button-bg-color--hover: var(--tag-bg-color--hover);
+  --button-bg-color--active: var(--tag-bg-color--active);
+
+  [data-theme="dark"] & {
+    --tag-text-color--hover: #{$ds-colors-brand-secondary-1000};
+    --tag-text-color--active: #{$ds-colors-brand-secondary-1000};
+    --tag-bg-color--hover: #{$ds-colors-brand-tertiary-400};
+    --tag-bg-color--active: #{$ds-colors-brand-tertiary-200};
+  }
+
+  &s,
+  &Wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    gap: $ds-spacings--small;
+  }
+
+  &Wrapper {
+    > a,
+    > span {
+      @extend %Tag;
+    }
+  }
+}

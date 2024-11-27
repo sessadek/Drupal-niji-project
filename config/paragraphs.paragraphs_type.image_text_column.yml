@@ -1,0 +1,10 @@
+uuid: d6ed803d-8852-4575-84b8-d46503aa334d
+langcode: en
+status: true
+dependencies: {  }
+id: image_text_column
+label: 'Image Text Column'
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

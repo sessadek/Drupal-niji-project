@@ -1,0 +1,164 @@
+/* ==========================================================================
+   MIXINS - LAYOUT
+   ========================================================================== */
+
+:root {
+  --margin-bock-start: #{$ds-spacings--xxx-large};
+  --margin-bock-end: #{$ds-spacings--xxx-large};
+  --page-wrapper-margin-inline: 0rem; // need unit for calc
+
+
+  @include breakpoint('desktop') {
+    --margin-bock-start: #{$ds-spacings--wide};
+    --margin-bock-end: #{$ds-spacings--wide};
+  }
+}
+
+
+
+@mixin PageWrapper {
+  width: min(calc(100% - (2 * var(--page-wrapper-margin-inline))), #{$ds-max-width-page-wrapper});
+  margin-inline: auto;
+}
+
+@mixin PageWrapper--withMarginInline {
+  @include breakpoint('desktop') {
+    --page-wrapper-margin-inline: #{$ds-spacings--medium};
+  }
+}
+
+@mixin PageInner {
+  width: min(calc(100% - 2 * var(--page-inner-padding-inline)), #{$ds-max-width-page-inner});
+  margin-inline: auto;
+
+  .PageInner,
+  .Page-content & { /// secure for nested .PageInner
+    width: 100%;
+  }
+}
+
+@mixin Theme--light {
+  --text-color: #{$ds-text-color-black};
+  --text-color-grey: #{$ds-text-color-grey};
+  --text-color-medium: #{$ds-text-color-medium};
+  --bg-color: #{$ds-text-color-white};
+  --text-color-primary: #{$ds-text-color-primary};
+  --text-color-secondary: #{$ds-text-color-secondary};
+  --link-color: #{$ds-text-color-black};
+  --link-color--hover: #{$ds-text-color-primary};
+  --link-color--visited: #{$ds-colors-brand-secondary-600};
+}
+
+@mixin Theme--dark {
+  --text-color: #{$ds-text-color-white};
+  --text-color-grey: #{$ds-text-color-medium};
+  --text-color-medium: #{$ds-text-color-grey};
+  --bg-color: #{$ds-text-color-primary};
+  --text-color-primary: #{$ds-text-color-white};
+  --text-color-secondary: #{$ds-text-color-white};
+  --link-color: #{$ds-text-color-white};
+  --link-color--hover: #{$ds-text-color-white};
+  --link-color--visited: #{$ds-colors-brand-secondary-200};
+}
+
+/* Margin block */
+@mixin MarginBlockHelper {
+  margin-block: var(--margin-bock-start) var(--margin-bock-end);
+}
+
+@mixin MarginBlockHelper--noTop {
+  margin-block-start: 0;
+}
+
+// Helpers to manage padding modifiers
+@mixin PaddingBlockHelper {
+  &.-paddingTopLarger {
+    @include PaddingBlockHelper--startLarger;
+  }
+
+  &.-paddingTopStandard {
+    @include PaddingBlockHelper--startStandard;
+  }
+
+  &.-paddingTopSmaller {
+    @include PaddingBlockHelper--startSmaller;
+  }
+
+  &.-paddingTopNone {
+    @include PaddingBlockHelper--startNone;
+  }
+
+  &.-paddingBottomLarger {
+    @include PaddingBlockHelper--endLarger;
+  }
+
+  &.-paddingBottomStandard {
+    @include PaddingBlockHelper--endStandard;
+  }
+
+  &.-paddingBottomSmaller {
+    @include PaddingBlockHelper--endSmaller;
+  }
+
+  &.-paddingBottomNone {
+    @include PaddingBlockHelper--endNone;
+  }
+}
+
+@mixin PaddingBlockHelper--startLarger {
+  padding-block-start: var(--ds-spacings--xxx-large);
+
+  @include breakpoint('desktop') {
+    padding-block-start: var(--ds-spacings--x-wide);
+  }
+}
+
+@mixin PaddingBlockHelper--startStandard {
+  padding-block-start: var(--ds-spacings--x-large);
+
+  @include breakpoint('desktop') {
+    padding-block-start: var(--ds-spacings--wide);
+  }
+}
+
+@mixin PaddingBlockHelper--startSmaller {
+  padding-block-start: var(--ds-spacings--medium);
+
+  @include breakpoint('desktop') {
+    padding-block-start: var(--ds-spacings--x-large);
+  }
+}
+
+@mixin PaddingBlockHelper--startNone {
+  padding-block-start: 0;
+}
+
+@mixin PaddingBlockHelper--endLarger {
+  padding-block-end: var(--ds-spacings--xxx-large);
+
+  @include breakpoint('desktop') {
+    padding-block-end: var(--ds-spacings--x-wide);
+  }
+}
+
+@mixin PaddingBlockHelper--endStandard {
+  padding-block-end: var(--ds-spacings--x-large);
+
+  @include breakpoint('desktop') {
+    padding-block-end: var(--ds-spacings--wide);
+  }
+}
+
+@mixin PaddingBlockHelper--endSmaller {
+  padding-block-end: var(--ds-spacings--medium);
+
+  @include breakpoint('desktop') {
+    padding-block-end: var(--ds-spacings--x-large);
+  }
+}
+
+@mixin PaddingBlockHelper--endNone {
+  padding-block-end: 0;
+}
+
+

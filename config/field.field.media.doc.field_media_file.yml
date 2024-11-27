@@ -1,0 +1,27 @@
+uuid: bece6a0c-c7d0-48a9-972c-04cf053efc21
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_media_file
+    - media.type.doc
+  module:
+    - file
+id: media.doc.field_media_file
+field_name: field_media_file
+entity_type: media
+bundle: doc
+label: File
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: pdf
+  max_filesize: ''
+  description_field: false
+field_type: file

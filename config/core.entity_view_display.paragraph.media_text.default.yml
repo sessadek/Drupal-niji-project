@@ -1,0 +1,52 @@
+uuid: dd3a0832-ff73-4749-843d-de1c3294a87a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.media_text.field_ctas
+    - field.field.paragraph.media_text.field_media
+    - field.field.paragraph.media_text.field_text
+    - field.field.paragraph.media_text.field_title
+    - paragraphs.paragraphs_type.media_text
+  module:
+    - entity_reference_revisions
+    - text
+id: paragraph.media_text.default
+targetEntityType: paragraph
+bundle: media_text
+mode: default
+content:
+  field_ctas:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_media:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_text:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_title:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

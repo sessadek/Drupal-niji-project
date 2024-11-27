@@ -1,0 +1,270 @@
+/* ==========================================================================
+   MIXINS - TEXT STYLES
+   ========================================================================== */
+
+// headings 1-5 mobile
+$ds-style-heading-0--font-size--mobile: $ds-font-size-750; // 38px
+$ds-style-heading-1--font-size--mobile: $ds-font-size-700; // 30px
+$ds-style-heading-2--font-size--mobile: $ds-font-size-650; // 28px
+$ds-style-heading-2--alt--font-size--mobile: $ds-font-size-625; // 26px
+$ds-style-heading-3--font-size--mobile: $ds-font-size-600; // 24px
+$ds-style-heading-4--font-size--mobile: $ds-font-size-550; // 22px
+$ds-style-heading-5--font-size--mobile: $ds-font-size-500; // 20px
+$ds-style-heading-6--font-size--mobile: $ds-font-size-450; // 18px
+
+// headings 1-5 tablet
+$ds-style-heading-0--font-size--tablet: $ds-font-size-850; // 68px
+$ds-style-heading-1--font-size--tablet: $ds-font-size-800; // 46px
+$ds-style-heading-2--font-size--tablet: $ds-font-size-750; // 38px
+$ds-style-heading-2--alt--font-size--tablet: $ds-font-size-750; // 38px
+$ds-style-heading-3--font-size--tablet: $ds-font-size-700; // 30px
+$ds-style-heading-4--font-size--tablet: $ds-font-size-600; // 24px
+
+// $ds-style-heading-5--font-size--tablet: $ds-font-size-450;
+// $ds-style-heading-6--font-size--tablet: $ds-font-size-450;
+
+// headings 1-5 desktop
+$ds-style-heading-0--font-size--desktop: $ds-font-size-900; // 96px
+$ds-style-heading-1--font-size--desktop: $ds-font-size-825; // 56px
+$ds-style-heading-2--font-size--desktop: $ds-font-size-800; // 46px
+$ds-style-heading-2--alt--font-size--desktop: $ds-font-size-850; // 68px
+$ds-style-heading-3--font-size--desktop: $ds-font-size-725; // 36px
+$ds-style-heading-4--font-size--desktop: $ds-font-size-600; // 24px
+
+// $ds-style-heading-5--font-size--desktop: $ds-font-size-500;
+// $ds-style-heading-6--font-size--desktop: $ds-font-size-500;
+
+// headline
+$ds-style-headline--font-size--mobile: $ds-font-size-050; // 10px
+$ds-style-headline--font-size--tablet: $ds-font-size-100; // 12px
+$ds-style-headline--font-size--desktop: $ds-font-size-300; // 14px
+
+// body 0-3
+$ds-style-body-0--font-size--mobile: $ds-font-size-600; // 24px
+$ds-style-body-1--font-size--mobile: $ds-font-size-450; // 18px
+$ds-style-body-2--font-size: $ds-font-size-400; // 16px
+$ds-style-body-3--font-size: $ds-font-size-300; // 14px
+
+// $ds-style-body-0--font-size--tablet: $ds-font-size-550;
+// $ds-style-body-0--font-size--desktop: $ds-font-size-600;
+// $ds-style-body-1--font-size--desktop: $ds-font-size-500;
+
+// button 1-2
+$ds-style-button--font-size--small: $ds-font-size-300;
+$ds-style-button--font-size--medium: $ds-font-size-400;
+
+// link
+$ds-style-link-1--font-size: $ds-font-size-300; // 14px
+
+// caption
+$ds-style-caption--font-size: $ds-style-body-3--font-size;
+
+:root {
+  --ds-style-heading-0--font-size: #{$ds-style-heading-0--font-size--mobile};
+  --ds-style-heading-1--font-size: #{$ds-style-heading-1--font-size--mobile};
+  --ds-style-heading-2--font-size: #{$ds-style-heading-2--font-size--mobile};
+  --ds-style-heading-2--alt--font-size: #{$ds-style-heading-2--alt--font-size--mobile};
+  --ds-style-heading-3--font-size: #{$ds-style-heading-3--font-size--mobile};
+  --ds-style-heading-4--font-size: #{$ds-style-heading-4--font-size--mobile};
+  --ds-style-heading-5--font-size: #{$ds-style-heading-5--font-size--mobile};
+  --ds-style-heading-6--font-size: #{$ds-style-heading-6--font-size--mobile};
+  --ds-style-headline--font-size: #{$ds-style-headline--font-size--mobile};
+  --ds-style-body-0--font-size: #{$ds-style-body-0--font-size--mobile};
+  --ds-style-body-1--font-size: #{$ds-style-body-1--font-size--mobile};
+
+  @include breakpoint('tablet') {
+    --ds-style-heading-0--font-size: #{$ds-style-heading-0--font-size--tablet};
+    --ds-style-heading-1--font-size: #{$ds-style-heading-1--font-size--tablet};
+    --ds-style-heading-2--font-size: #{$ds-style-heading-2--font-size--tablet};
+    --ds-style-heading-2--alt--font-size: #{$ds-style-heading-2--alt--font-size--tablet};
+    --ds-style-heading-3--font-size: #{$ds-style-heading-3--font-size--tablet};
+    --ds-style-heading-4--font-size: #{$ds-style-heading-4--font-size--tablet};
+
+    // --ds-style-heading-5--font-size: #{$ds-style-heading-5--font-size--tablet};
+    // --ds-style-heading-6--font-size: #{$ds-style-heading-6--font-size--tablet};
+    --ds-style-headline--font-size: #{$ds-style-headline--font-size--tablet};
+  }
+
+  @include breakpoint('desktop') {
+    --ds-style-heading-0--font-size: #{$ds-style-heading-0--font-size--desktop};
+    --ds-style-heading-1--font-size: #{$ds-style-heading-1--font-size--desktop};
+    --ds-style-heading-2--font-size: #{$ds-style-heading-2--font-size--desktop};
+    --ds-style-heading-2--alt--font-size: #{$ds-style-heading-2--alt--font-size--desktop};
+    --ds-style-heading-3--font-size: #{$ds-style-heading-3--font-size--desktop};
+    --ds-style-heading-4--font-size: #{$ds-style-heading-4--font-size--desktop};
+
+    // --ds-style-heading-5--font-size: #{$ds-style-heading-5--font-size--desktop};
+    // --ds-style-heading-6--font-size: #{$ds-style-heading-6--font-size--desktop};
+    --ds-style-headline--font-size: #{$ds-style-headline--font-size--desktop};
+  }
+}
+
+/// Heading style level #0
+/// @name TextStyle-heading0
+@mixin TextStyle-heading0 {
+  font-family: $ds-font-family-second;
+  font-size: var(--ds-style-heading-0--font-size);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/// Heading style level #1
+/// @name TextStyle-heading1
+@mixin TextStyle-heading1 {
+  font-family: $ds-font-family-second;
+  font-size: var(--ds-style-heading-1--font-size);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/// Heading style level #2
+/// @name TextStyle-heading2
+@mixin TextStyle-heading2 {
+  position: relative;
+  font-family: $ds-font-family-second;
+  font-size: var(--ds-style-heading-2--font-size);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/// Heading style level #2 alt
+/// @name TextStyle-heading2--alt
+@mixin TextStyle-heading2--alt {
+  position: relative;
+  font-family: $ds-font-family-second;
+  font-size: var(--ds-style-heading-2--alt--font-size);
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+/// Heading style level #3
+/// @name TextStyle-heading3
+@mixin TextStyle-heading3 {
+  font-family: $ds-font-family-second;
+  font-size: var(--ds-style-heading-3--font-size);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/// Heading style level #4
+/// @name TextStyle-heading4
+@mixin TextStyle-heading4 {
+  font-family: $ds-font-family-second;
+  font-size: var(--ds-style-heading-4--font-size);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/// Heading style level #5
+/// @name TextStyle-heading5
+@mixin TextStyle-heading5 {
+  font-family: $ds-font-family-second;
+  font-size: var(--ds-style-heading-5--font-size);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/// Heading style level #6
+/// @name TextStyle-heading6
+@mixin TextStyle-heading6 {
+  font-family: $ds-font-family-second;
+  font-size: var(--ds-style-heading-6--font-size);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/// Body text style level #0 (Large text)
+/// @name TextStyle-body0
+@mixin TextStyle-body0 {
+  font-family: $ds-font-family-main;
+  font-size: var(--ds-style-body-0--font-size);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/// Alternate style for highlighted body prefix text
+/// @name TextStyle-headline
+@mixin TextStyle-headline {
+  font-family: $ds-font-family-main;
+  font-size: var(--ds-style-headline--font-size);
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+/// Body text style level #1 (Medium text)
+/// @name TextStyle-body1
+@mixin TextStyle-body1 {
+  font-family: $ds-font-family-main;
+  font-size: var(--ds-style-body-1--font-size);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/// Body text style level #2 (Normal text)
+/// @name TextStyle-body2
+@mixin TextStyle-body2 {
+  font-family: $ds-font-family-main;
+  font-size: $ds-style-body-2--font-size;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/// Body text style level #3 (Small text)
+/// @name TextStyle-body3
+@mixin TextStyle-body3 {
+  font-family: $ds-font-family-main;
+  font-size: $ds-style-body-3--font-size;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/// Caption style (example: error messages,  legend or details)
+/// @name TextStyle-caption
+@mixin TextStyle-caption {
+  font-family: $ds-font-family-main;
+  font-size: $ds-style-caption--font-size;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+/// Label style (example: tag labels)
+/// @name TextStyle-label
+
+@mixin TextStyle-label {
+  font-family: $ds-font-family-main;
+  font-size: $ds-font-size-400; // 16px
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+/// Button style small
+/// @name TextStyle-button--small
+@mixin TextStyle-button--small {
+  font-family: $ds-font-family-main;
+  font-size: $ds-style-button--font-size--small; // 14px
+  font-weight: 700;
+  line-height: 1.1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+/// Button style medium
+/// @name TextStyle-button--medium
+@mixin TextStyle-button--medium {
+  font-family: $ds-font-family-main;
+  font-size: var(--button-font-size, $ds-style-button--font-size--medium);
+  font-weight: 700;
+  line-height: 1.1;
+  text-decoration: none;
+  text-transform: none;
+}
+
+/// Button style #1
+/// @name TextStyle-link1
+@mixin TextStyle-link1 {
+  font-family: $ds-font-family-main;
+  font-size: $ds-style-link-1--font-size;
+  font-weight: 700;
+  line-height: 1.1;
+}

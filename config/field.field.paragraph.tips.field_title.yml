@@ -1,0 +1,19 @@
+uuid: 74eaf2c3-2357-4a4e-9378-d64d623c0786
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.tips
+id: paragraph.tips.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: tips
+label: 'Titre astuce'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

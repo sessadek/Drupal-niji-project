@@ -1,0 +1,49 @@
+uuid: c7d73c7a-89e3-473a-95b1-3b42c3ec2f88
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_doc
+    - paragraphs.paragraphs_type.doc
+    - paragraphs.paragraphs_type.download
+  module:
+    - entity_reference_revisions
+id: paragraph.download.field_doc
+field_name: field_doc
+entity_type: paragraph
+bundle: download
+label: Documents
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      doc: doc
+    negate: 0
+    target_bundles_drag_drop:
+      cta:
+        weight: 8
+        enabled: false
+      doc:
+        weight: 9
+        enabled: true
+      download:
+        weight: 10
+        enabled: false
+      image_text_column:
+        weight: 11
+        enabled: false
+      media_text:
+        weight: 12
+        enabled: false
+      text:
+        weight: 13
+        enabled: false
+      text_content:
+        weight: 14
+        enabled: false
+field_type: entity_reference_revisions

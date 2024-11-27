@@ -1,0 +1,158 @@
+/* ==========================================================================
+   Card
+   ========================================================================== */
+
+/* ==========================================================================
+   TODO
+   ========================================================================== */
+
+:root {
+  /* --card-title-line-clamp: 10;
+  --card-desc-line-clamp: 10;
+  --card-speaker-margin-block: auto;
+  --card-background-color: transparent;
+  --card-border: solid #{$ds-border-width-small} #{$ds-border-color-light};
+  --card-gap: 0;
+  --card-content-justify: flex-start;
+  --card-content-padding-block: #{$ds-spacings--medium};
+  --card-content-padding-inline: #{$ds-spacings--medium};
+  --card-content-gap: #{$ds-spacings--medium};
+  --card-arrow-size: 3.5rem;
+  --card-arrow-align-self: auto;
+  --card-align-items: center;
+  --card-picto-width: #{px-to-rem(42)};
+  --card-picto-url: url('../images/icons/atom-big.svg');
+  --card-picto-position: center;
+  --card-picto-size: contain; */
+}
+
+.Card {
+  /* --image-fit-aspect-ratio: 294/132;
+
+  @include breakpoint('tablet') {
+    --image-fit-aspect-ratio: 316/148;
+  }
+
+  position: relative;
+  display: grid;
+  gap: var(--card-gap);
+  border-block-end: var(--card-border);
+  background-color: var(--card-background-color);
+  transition-timing-function: var(--card-transition-timing-function, ease);
+  transition-duration: var(--card-transition-duration, #{$ds-transition-speed-fast});
+  transition-property: var(--card-transition-property, background-color);
+  border-inline: var(--card-border);
+
+  &.-clampDesc {
+    --card-desc-line-clamp: 3;
+  }
+
+  button {
+    text-align: start; // overwrite button alignment
+  }
+
+  .Card {
+    border: 0 !important;
+  }
+
+  &-picture {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: var(--image-fit-aspect-ratio);
+
+    img,
+    .-empty {
+      @include ImageFit;
+
+      transition: transform $ds-transition-speed-standard;
+    }
+
+    .-empty {
+      @include ImagePlaceholder;
+
+      --image-placeholder-position: right #{$ds-spacings--semi} top #{-1 * $ds-spacings--small};
+    }
+  }
+
+  &-content {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--card-content-gap);
+    justify-content: var(--card-content-justify);
+    align-items: stretch;
+    padding: var(--card-content-padding-block) var(--card-content-padding-inline);
+  }
+
+  &-title {
+    @extend %TextStyle-heading3;
+
+    display: -webkit-box;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--card-title-line-clamp);
+  }
+
+  &-subtitle {
+    @extend %TextStyle-button--small;
+
+    color: $ds-colors-grayscale-200;
+    text-transform: uppercase;
+  }
+
+  &:is(a),
+  > button {
+    &:is(:hover, :focus-visible) {
+      .Card {
+        &-picture {
+          img,
+          .-empty {
+            transform: scale(1.05);
+          }
+        }
+      }
+    }
+  }
+
+  &.-underlineHover:hover {
+    .Card {
+      &-title,
+      &-desc {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &.-bgHover {
+    --card-background-color: #{$ds-colors-grayscale-white};
+
+    &:hover {
+      background: $ds-colors-brand-primary-100;
+    }
+  }
+
+  &-tags {
+    padding-inline-end: $ds-spacings--large;
+
+    .Tag:nth-child(n + 3) {
+      display: none;
+    }
+  }
+
+  &-desc {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--card-desc-line-clamp);
+  }
+
+  &-actions {
+    align-self: flex-end;
+    width: 100%;
+    margin-block-start: auto;
+  } */
+}

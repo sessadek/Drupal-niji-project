@@ -1,0 +1,10 @@
+uuid: 84953412-6da2-4fb6-b83e-93d62af43885
+langcode: en
+status: true
+dependencies: {  }
+id: text_content
+label: 'Texte Content'
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

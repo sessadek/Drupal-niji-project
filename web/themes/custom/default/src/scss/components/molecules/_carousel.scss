@@ -1,0 +1,285 @@
+/* ==========================================================================
+   Carousels
+   ========================================================================== */
+:root {
+  --carousel-color: #{$ds-colors-brand-primary};
+  --carousel-color--hover: #{$ds-colors-grayscale-white};
+  --carousel-color--opacity--hover: 1;
+  --carousel-arrow-size: #{px-to-rem(60)};
+  --carousel-arrow-top-position: 50%;
+  --carousel-arrow-translate: 0 -50%;
+  --carousel-arrow-inline-position: #{-1 * $ds-spacings--semi};
+
+  @include breakpoint('desktop') {
+    --carousel-arrow-inline-position: calc(-1 * var(--carousel-arrow-size) / 2);
+  }
+}
+
+/* stylelint-disable selector-class-pattern */
+.Carousel {
+  &.splide {
+    .splide {
+      &__track {
+        .Images &,
+        .-gridIcons &,
+        .-gridCards & {
+          overflow: visible;
+        }
+      }
+
+      &__list {
+        // nothing by default
+      }
+
+      &__slide {
+        // nothing by default
+      }
+
+      /* &__pagination {
+        position: relative;
+        inset-block-end: 0;
+        width: max-content;
+        margin-block-start: $ds-spacings--medium;
+        gap: $ds-spacings--xx-small;
+        margin-inline: auto;
+
+        &__page {
+          position: relative;
+          display: block;
+          width: 1rem;
+          height: .125rem;
+          border-radius: 0;
+          margin: 0;
+          background: var(--carousel-color);
+          color: var(--carousel-color);
+          opacity: .5;
+          transform: none;
+          transition: opacity $ds-transition-speed-fast;
+
+          &::after {
+            position: absolute;
+            inset-block-start: 50%;
+            inset-inline-start: 0;
+            width: 100%;
+            aspect-ratio: 1;
+            background: $ds-colors-grayscale-black;
+            content: '';
+            opacity: 0;
+            translate: 0 -50%;
+          }
+
+          &:hover,
+          &.is-active {
+            opacity: 1;
+          }
+        }
+
+        &__total {
+          display: none;
+        }
+      } */
+
+      &__arrows {
+        // default position
+        position: absolute;
+        inset: var(--carousel-arrow-top-position) var(--carousel-arrow-inline-position) auto;
+        z-index: 2;
+        display: flex;
+        gap: $ds-spacings--small;
+        justify-content: space-between;
+        pointer-events: none;
+        translate: var(--carousel-arrow-translate);
+      }
+
+      &__arrow {
+        --_border-color: #{$ds-border-color-light};
+        --_bg-color: #{$ds-colors-grayscale-white};
+        --_arrow-color: #{$ds-colors-grayscale-400};
+
+        position: relative;
+        inset: auto; // reset
+        isolation: isolate;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: var(--carousel-arrow-size);
+        height: var(--carousel-arrow-size); // aspect-ratio not working on button
+        border: solid $ds-border-width-small var(--_border-color);
+        background: var(--_bg-color);
+        color: var(--_arrow-color);
+        opacity: 1;
+        pointer-events: auto;
+        transform: none; // reset
+        transition: $ds-transition-speed-fast;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: -$ds-border-width-small;
+          z-index: -1;
+          border-radius: inherit;
+          background: var(--carousel-color);
+          opacity: 0;
+          transition: inherit;
+        }
+
+        &::after {
+          content: '';
+          position: relative;
+          width: px-to-rem(20);
+          aspect-ratio: 1;
+          background-color: currentColor;
+          mask-image: url("../images/icons/long-arrow.svg");
+          mask-repeat: no-repeat;
+          mask-size: contain;
+        }
+
+        svg {
+          display: none;
+        }
+
+        &[disabled] {
+          --_border-color: #{$ds-colors-grayscale-050};
+          --_arrow-color: #{$ds-colors-grayscale-200};
+        }
+
+        &--prev {
+          &::after {
+            transform: rotate(180deg);
+          }
+        }
+
+        &:not([disabled]):hover,
+        &:not([disabled]):focus-visible {
+          --_bg-color: #{$ds-colors-grayscale-050};
+        }
+      }
+    }
+  }
+
+  &.-gridCards {
+    --_grid-nb-columns-card-ratio: #{1 * 4};
+    --carousel-arrow-top-position: calc((100vw - (var(--page-inner-padding-inline) + var(--page-wrapper-margin-inline)) * 2) / var(--_grid-nb-columns-card-ratio));
+    --carousel-arrow-translate: 0 -50%;
+
+    @include breakpoint('mobile-wide') {
+      --_grid-nb-columns-card-ratio: #{2 * 3.5};
+    }
+
+    &.splide {
+      .splide {
+        &__slide {
+          display: grid;
+        }
+
+        @include breakpoint('tablet') {
+          &__list {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+      }
+    }
+  }
+
+  &.-gridIcons {
+    --_grid-nb-columns: 1;
+    --carousel-arrow-top-position: calc((100vw - (var(--page-inner-padding-inline) + var(--page-wrapper-margin-inline)) * 2) / var(--_grid-nb-columns) - #{$ds-spacings--small});
+    --carousel-arrow-translate: 0 -100%;
+
+    @include breakpoint-between('mobile', 'desktop') {
+      --carousel-arrow-inline-position: #{$ds-spacings--small};
+    }
+
+    @include breakpoint('mobile-wide') {
+      --_grid-nb-columns: 2;
+    }
+
+    @include breakpoint('tablet') {
+      --_grid-nb-columns: 3;
+    }
+
+    &.splide {
+      .splide {
+        @include breakpoint('desktop') {
+          &__list {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr);
+
+            .Card {
+              display: grid;
+              grid-template-rows: subgrid;
+              grid-row: span 3;
+
+              &-content {
+                display: grid;
+                grid-template-rows: subgrid;
+                grid-row: span 2;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.-modalFull {
+    .splide {
+      &__pagination {
+        @extend %Caption;
+        @extend %Caption-inner;
+
+        inset: 100% 0 auto auto;
+        gap: 0;
+        padding-inline: $ds-spacings--small;
+        background: $ds-colors-grayscale-white;
+        counter-reset: pagination-num;
+
+        li {
+          @extend %TextStyle-caption;
+
+          counter-increment: pagination-num;
+        }
+
+        &__page {
+          display: none;
+          width: auto;
+          height: auto;
+          margin: 0;
+          background: none;
+          opacity: 1;
+          pointer-events: none;
+
+          &::before {
+            content: counter( pagination-num );
+          }
+
+          &.is-active {
+            display: block;
+            transform: none;
+          }
+        }
+
+        &__total {
+          display: block;
+
+          &::before {
+            content: '/';
+            display: inline-block;
+            margin-inline: $ds-spacings--xxx-small;
+          }
+        }
+      }
+    }
+  }
+
+  &.-hasNoHoverflow {
+    .splide {
+      &__arrows,
+      &__pagination {
+        display: none;
+      }
+    }
+  }
+}
+/* stylelint-enable */

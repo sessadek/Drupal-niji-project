@@ -1,0 +1,59 @@
+/* ==========================================================================
+   AdminToolBar
+   ========================================================================== */
+/* stylelint-disable selector-class-pattern */
+.gin-back-to-admin {
+  display: inline-block;
+  overflow: hidden;
+  max-width: calc(100vw - 3rem);
+  text-overflow: ellipsis;
+}
+
+#block-default-primary-local-tasks {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  z-index: 1000;
+  border: solid $ds-border-color-light;
+  border-width: $ds-border-width-small $ds-border-width-small 0 0;
+  background: $ds-colors-grayscale-white;
+
+  .contextual {
+    display: none;
+  }
+
+  ul {
+    display: flex;
+    margin: 0;
+    padding-inline: $ds-spacings--small;
+
+    li {
+      a {
+        --_opactity: 0;
+
+        position: relative;
+        isolation: isolate;
+        display: inline-block;
+        padding: $ds-spacings--standard $ds-spacings--small;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0 -1 * $ds-spacings--small;
+          z-index: -1;
+          background: $ds-colors-grayscale-100;
+          opacity: var(--_opactity);
+          pointer-events: none;
+          transition: $ds-transition-speed-fast;
+        }
+
+        &:hover {
+          --_opactity: 1;
+
+          color: var(--link-color);
+        }
+      }
+    }
+  }
+}
+/* stylelint-enable */

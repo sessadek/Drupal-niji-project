@@ -1,0 +1,30 @@
+uuid: 92c7f73f-416d-4d61-b76b-2b8610c9d4bc
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.cta_primary
+    - field.field.paragraph.cta.field_link
+    - field.field.paragraph.cta.paragraph_view_mode
+    - paragraphs.paragraphs_type.cta
+  module:
+    - link
+id: paragraph.cta.cta_primary
+targetEntityType: paragraph
+bundle: cta
+mode: cta_primary
+content:
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  paragraph_view_mode: true

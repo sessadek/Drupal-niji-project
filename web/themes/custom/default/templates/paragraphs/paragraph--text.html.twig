@@ -1,0 +1,12 @@
+{% set paragraphClasses = [
+  '-text',
+] %}
+{% set attributes = attributes.addClass(paragraphClasses) %}
+
+{% extends '@default/paragraphs/paragraph-parent.html.twig' %}
+
+{% block content %}
+  {% if content.field_content | render %}
+    {{ content.field_content }}
+  {% endif %}
+{% endblock content %}

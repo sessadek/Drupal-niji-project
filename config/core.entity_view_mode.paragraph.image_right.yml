@@ -1,0 +1,11 @@
+uuid: bf4feb9b-d1eb-46ba-816c-25bc43a369d4
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.image_right
+label: 'Image à droite'
+description: ''
+targetEntityType: paragraph
+cache: true

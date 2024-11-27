@@ -1,0 +1,8 @@
+uuid: c989b5cb-f329-433b-8be4-42ed79ecc143
+langcode: en
+status: true
+dependencies: {  }
+id: promo_message_block
+label: 'promo message block'
+revision: false
+description: 'Afficher un message promotionnel ou un message informatif (alerte fraude..etc) sur le site internet , durant la session d’un utilisateur'

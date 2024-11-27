@@ -1,0 +1,61 @@
+uuid: bdb0d3dd-60f9-4cd4-938f-ddc41d0ff223
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_content
+    - node.type.homepage
+    - paragraphs.paragraphs_type.download
+    - paragraphs.paragraphs_type.image_text_column
+    - paragraphs.paragraphs_type.media_text
+    - paragraphs.paragraphs_type.text
+  module:
+    - entity_reference_revisions
+id: node.homepage.field_content
+field_name: field_content
+entity_type: node
+bundle: homepage
+label: Contenu
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      text: text
+      download: download
+      image_text_column: image_text_column
+      media_text: media_text
+    negate: 0
+    target_bundles_drag_drop:
+      cta:
+        weight: 4
+        enabled: false
+      download:
+        weight: 9
+        enabled: true
+      downloads:
+        weight: 10
+        enabled: false
+      homepage_hero_banner:
+        weight: 13
+        enabled: false
+      image_text_column:
+        weight: 11
+        enabled: true
+      media_text:
+        weight: 12
+        enabled: true
+      required_cta:
+        weight: 16
+        enabled: false
+      text:
+        weight: 5
+        enabled: true
+      text_content:
+        weight: 6
+        enabled: false
+field_type: entity_reference_revisions

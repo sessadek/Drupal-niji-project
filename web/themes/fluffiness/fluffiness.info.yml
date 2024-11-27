@@ -1,0 +1,22 @@
+name: fluffiness
+type: theme
+'base theme': stable9
+version: 1.0.0
+libraries:
+  - fluffiness/base
+  - fluffiness/messages
+  - core/normalize
+libraries-extend:
+  user/drupal.user:
+    - fluffiness/user
+  core/drupal.dropbutton:
+    - fluffiness/dropbutton
+  core/drupal.dialog:
+    - fluffiness/dialog
+  file/drupal.file:
+    - fluffiness/file
+  core/drupal.progress:
+    - fluffiness/progress
+description: ''
+core_version_requirement: ^10
+generator: 'starterkit_theme:10.3.2'

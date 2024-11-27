@@ -1,0 +1,29 @@
+/* ==========================================================================
+   Link Simple
+   ========================================================================== */
+
+.LinkSimple {
+  @extend %LinkSimple;
+
+  &.-arrowLeft {
+    @extend %LinkSimple--arrowLeft;
+  }
+
+  &.-arrowRight {
+    @extend %LinkSimple--arrowRight;
+  }
+
+  &Right {
+    @extend %LinkSimple;
+    @extend %LinkSimple--arrowRight;
+  }
+
+  &Wrapper {
+    display: inline-block;
+
+    > a {
+      @extend %LinkSimple;
+      @extend %LinkSimple--arrowRight;
+    }
+  }
+}

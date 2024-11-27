@@ -1,0 +1,80 @@
+uuid: 8a5dcbd0-1920-43ce-9f5f-fe1becdf7b54
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.image_text_column.field_ctas
+    - field.field.paragraph.image_text_column.field_media
+    - field.field.paragraph.image_text_column.field_text
+    - field.field.paragraph.image_text_column.field_title
+    - field.field.paragraph.image_text_column.paragraph_view_mode
+    - paragraphs.paragraphs_type.image_text_column
+  module:
+    - media_library
+    - paragraph_view_mode
+    - paragraphs
+    - text
+id: paragraph.image_text_column.default
+targetEntityType: paragraph
+bundle: image_text_column
+mode: default
+content:
+  field_ctas:
+    type: paragraphs
+    weight: 4
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: _none
+      features:
+        add_above: '0'
+        collapse_edit_all: collapse_edit_all
+        convert: '0'
+        duplicate: duplicate
+    third_party_settings: {  }
+  field_media:
+    type: media_library_widget
+    weight: 2
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+  field_text:
+    type: text_textarea
+    weight: 3
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  paragraph_view_mode:
+    type: paragraph_view_mode
+    weight: 0
+    region: content
+    settings:
+      view_modes:
+        default: Default
+        image_left: 'Image à gauche'
+        image_right: 'Image à droite'
+      default_view_mode: default
+      form_mode_bind: true
+      apply_to_preview: false
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

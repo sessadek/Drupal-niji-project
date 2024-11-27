@@ -1,0 +1,15 @@
+/* ==========================================================================
+   Link Simple - Placeholders
+   ========================================================================== */
+
+%LinkSimple {
+  @include LinkSimple;
+}
+
+%LinkSimple--arrowLeft {
+  @include LinkSimple--arrowLeft;
+}
+
+%LinkSimple--arrowRight {
+  @include LinkSimple--arrowRight;
+}

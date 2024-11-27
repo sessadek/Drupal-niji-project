@@ -1,0 +1,85 @@
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+:root {
+  @extend %Theme--light;
+
+  --scroll-padding-block-start: calc(var(--drupal-displace-offset-top) + var(--site-header-height) - #{$ds-spacings--standard});
+  --focus-visible-color: currentColor;
+}
+
+[data-theme] {
+  color: var(--text-color);
+}
+
+[data-theme="light"] {
+  @extend %Theme--light
+}
+
+[data-theme="dark"] {
+  @extend %Theme--dark;
+}
+
+html {
+  // font-size: 62.5%; // activate to use rem in base 10
+  scroll-behavior: smooth;
+  scroll-padding-block-start: var(--scroll-padding-block-start) !important; // overwrite Drupal Admin tool bar
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @extend %TextStyle-body2;
+
+  margin: 0;
+  padding: var(--drupal-displace-offset-top) 0 0 !important;
+  background: $ds-bg-color-white;
+  color: var(--text-color);
+}
+
+a,
+button,
+[type="submit"],
+[type="button"],
+[type="reset"],
+[type="cancel"] {
+  &:focus-visible {
+    @include FocusVisible;
+  }
+}
+
+.PageWrapper {
+  @extend %PageWrapper;
+
+  &.-withMarginInline {
+    @extend %PageWrapper--withMarginInline;
+  }
+}
+
+.PageInner {
+  @extend %PageInner;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01s !important;
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

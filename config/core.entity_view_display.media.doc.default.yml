@@ -1,0 +1,27 @@
+uuid: 79197bac-38f6-4e0d-9416-39bc19d4a526
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.media.doc.field_media_file
+    - media.type.doc
+  module:
+    - file
+id: media.doc.default
+targetEntityType: media
+bundle: doc
+mode: default
+content:
+  field_media_file:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  created: true
+  name: true
+  thumbnail: true
+  uid: true

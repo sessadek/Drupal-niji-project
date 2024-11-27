@@ -1,0 +1,24 @@
+uuid: d6e1a64b-c686-4b83-8d35-4ef8a83235ce
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - filter.format.ckeditor_5
+    - paragraphs.paragraphs_type.download
+  module:
+    - text
+id: paragraph.download.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: download
+label: Texte
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - ckeditor_5
+field_type: text_long

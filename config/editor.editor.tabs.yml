@@ -1,0 +1,40 @@
+uuid: 48d6eb28-54d2-49c3-ad15-9c70cbac7094
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.tabs
+  module:
+    - ckeditor5
+format: tabs
+editor: ckeditor5
+settings:
+  toolbar:
+    items:
+      - heading
+      - bold
+      - italic
+      - specialCharacters
+      - underline
+      - subscript
+      - superscript
+      - link
+      - '|'
+      - bulletedList
+      - numberedList
+      - insertTable
+  plugins:
+    ckeditor5_heading:
+      enabled_headings:
+        - heading2
+        - heading3
+        - heading4
+        - heading5
+        - heading6
+    ckeditor5_list:
+      properties:
+        reversed: true
+        startIndex: true
+      multiBlock: true
+image_upload:
+  status: false

@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+name: black_white
+label: 'black & white'
+effects: {  }

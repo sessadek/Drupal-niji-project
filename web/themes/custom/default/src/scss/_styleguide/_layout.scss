@@ -1,0 +1,20 @@
+/* ==========================================================================
+   STYLE GUIDE - Layout
+   ========================================================================== */
+
+.DsSection {
+  margin-block: $ds-spacings--x-large;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.DsP {
+  margin-block: $ds-spacings--large;
+
+  &.-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $ds-spacings--standard;
+    align-items: center;
+  }
+}
+

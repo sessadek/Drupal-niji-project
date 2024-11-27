@@ -1,0 +1,14 @@
+_core:
+  default_config_hash: l58O_yEXSo-SeJi19LXdzTU1tNJG3lmnIhCitRkM1tk
+langcode: en
+uuid: b926800e-d290-4f10-86d4-48037bb3884d
+name: Energies33
+mail: admin@example.com
+slogan: ''
+page:
+  403: ''
+  404: ''
+  front: /
+admin_compact_mode: false
+weight_select_max: 100
+default_langcode: en

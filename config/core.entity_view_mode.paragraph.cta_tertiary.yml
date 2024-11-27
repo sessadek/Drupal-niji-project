@@ -1,0 +1,11 @@
+uuid: 78b28812-8635-4c56-80a3-a60812d77af3
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.cta_tertiary
+label: 'CTA tertiary'
+description: ''
+targetEntityType: paragraph
+cache: true

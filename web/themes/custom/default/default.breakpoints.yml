@@ -1,0 +1,48 @@
+default.mobile:
+  label: Mobile
+  mediaQuery: ''
+  weight: 0
+  multipliers:
+    - 1x
+
+default.mobilelarge:
+  label: Mobile Large
+  mediaQuery: 'all and (min-width: 375px)'
+  weight: 1
+  multipliers:
+    - 1x
+
+default.tablet:
+  label: Tablet
+  mediaQuery: 'all and (min-width: 768px)'
+  weight: 2
+  multipliers:
+    - 1x
+
+default.desktop:
+  label: Desktop
+  mediaQuery: 'all and (min-width: 1024px)'
+  weight: 3
+  multipliers:
+    - 1x
+
+default.desktoplarge:
+  label: Desktop Large
+  mediaQuery: 'all and (min-width: 1280px)'
+  weight: 4
+  multipliers:
+    - 1x
+
+default.desktopxlarge:
+  label: Desktop X-large
+  mediaQuery: 'all and (min-width: 1440px)'
+  weight: 5
+  multipliers:
+    - 1x
+
+default.desktopxxlarge:
+  label: Desktop XX-large
+  mediaQuery: 'all and (min-width: 1680px)'
+  weight: 6
+  multipliers:
+    - 1x

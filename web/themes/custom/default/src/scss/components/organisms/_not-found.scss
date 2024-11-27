@@ -1,0 +1,12 @@
+/* ==========================================================================
+   Block Not Found
+   ========================================================================== */
+
+.BlockNotFound {
+  &-content {
+    @extend %TextStyle-heading4;
+
+    margin-block: $ds-spacings--xx-large $ds-spacings--xx-wide;
+    text-align: center;
+  }
+}

@@ -1,0 +1,10 @@
+uuid: 4d6f2f13-5a6e-4639-ba02-8bfaec7da096
+langcode: en
+status: true
+dependencies: {  }
+id: tips_and_tricks
+label: 'Trucs et astuces'
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

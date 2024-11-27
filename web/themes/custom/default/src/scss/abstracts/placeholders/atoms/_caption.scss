@@ -1,0 +1,16 @@
+/* ==========================================================================
+   Caption Placeholder
+   ========================================================================== */
+
+
+%Caption {
+  margin: $ds-spacings--small $ds-spacings--semi 0;
+
+  &-inner {
+    @extend %TextStyle-caption;
+
+    padding-block-end: $ds-spacings--xx-small;
+    color: $ds-colors-brand-primary;
+    text-align: center;
+  }
+}

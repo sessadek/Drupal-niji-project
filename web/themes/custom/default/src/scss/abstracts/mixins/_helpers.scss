@@ -1,0 +1,159 @@
+@use 'sass:math';
+@use 'sass:color';
+
+/* ==========================================================================
+   MIXINS - Helpers
+   ========================================================================== */
+:root {
+  --image-fit-aspect-ratio: 16/9;
+  --image-fit-object-fit: cover;
+  --image-fit-width: 100%;
+  --image-fit-height: auto;
+}
+
+@function px-to-rem($value) {
+  $remValue: math.div($value, 16) + rem;
+
+  @return $remValue;
+}
+
+@function is-important($important) {
+  @return #{if($important, '!important', '')};
+}
+
+@function get-rgb($color) {
+  @return #{color.red($color)} #{color.green($color)} #{color.blue($color)};
+}
+
+/* VisuallyHidden */
+@mixin VisuallyHidden {
+  position: absolute !important;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  word-wrap: normal;
+}
+
+/* LinkUnderline */
+@mixin LinkUnderline {
+  text-decoration-line: underline;
+  text-decoration-thickness: $ds-border-width-medium;
+  text-underline-offset: .25em;
+}
+
+/* Image fit */
+@mixin ImageFit {
+  object-fit: var(--image-fit-object-fit);
+  width: var(--image-fit-width);
+  height: var(--image-fit-height);
+  aspect-ratio: var(--image-fit-aspect-ratio);
+}
+
+/* Image placeholder */
+@mixin ImagePlaceholder {
+  display: block;
+  background-color: $ds-colors-brand-primary;
+  background-image: url('../images/atom.svg');
+  background-position: var(--image-placeholder-position, right #{$ds-spacings--semi} top -4rem);
+  background-size: var(--image-placeholder-size, px-to-rem(282));
+  background-repeat: no-repeat;
+}
+
+@mixin GutterThreeColumns {
+  column-gap: $ds-spacings--standard;
+
+  @include breakpoint('tablet') {
+    column-gap: $ds-spacings--large;
+  }
+}
+
+/* Overlay */
+
+@mixin Overlay {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: $ds-colors-brand-primary;
+  opacity: 0;
+  pointer-events: none;
+  transition: $ds-transition-speed-standard $ds-transition-speed-fast;
+}
+
+@mixin Overlay--visible {
+  opacity: .6;
+  transition-delay: $ds-transition-speed-none;
+}
+
+/* Picture mask */
+
+@mixin PictureMask {
+  --picture-mask-color: #{get-rgb($ds-bg-color-white)};
+
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: var(--image-fit-aspect-ratio);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(to bottom, rgba(var(--picture-mask-color) / 0%) 87%,  rgb(var(--picture-mask-color) / 100%) 97%),
+      linear-gradient(to right, rgba(var(--picture-mask-color) / 100%) 0%,  rgb(var(--picture-mask-color) / 0%) 10%);
+  }
+}
+
+@mixin ViewLastOffersBg {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--view-last-offers-columns), 1fr);
+  gap: $ds-spacings--medium;
+  padding-block: $ds-spacings--x-large;
+
+  &::before {
+    content: '';
+    position: absolute;
+    grid-column: 2/12;
+    width: 100%;
+    height: 100%;
+    background: $ds-colors-brand-secondary;
+
+    @include breakpoint('tablet') {
+      grid-column: 2/8;
+    }
+
+    @include breakpoint('desktop') {
+      grid-column: 2/12;
+    }
+  }
+
+  > * {
+    grid-column: 1/13;
+
+    @include breakpoint('tablet') {
+      grid-column: 1/9;
+    }
+
+    @include breakpoint('desktop') {
+      grid-column: 1/13;
+    }
+  }
+}
+
+/* FocusVisilbe */
+
+@mixin FocusVisible {
+  outline: $ds-border-width-medium dashed var(--focus-visible-color);
+  outline-offset: $ds-spacings--x-small;
+}
+
+/* UcFirst */
+
+@mixin UcFirst {
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}

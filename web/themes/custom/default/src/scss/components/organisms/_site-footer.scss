@@ -1,0 +1,161 @@
+/* ==========================================================================
+   SiteFooter
+   ========================================================================== */
+$site-footer-color: $ds-text-color-black;
+$site-footer-color--hover: $ds-text-color-black;
+$site-footer-background-color: $ds-bg-color-secondary-light;
+
+.SiteFooter {
+  @extend %PageWrapper;
+  @extend %PageWrapper--withMarginInline;
+
+  position: relative;
+  overflow: hidden;
+  margin-block: auto $ds-spacings--xxx-large; // force bottom page with margin-block-top: auto
+  background-color: $site-footer-background-color;
+  color: $site-footer-color;
+
+  a:not(.Button) {
+    color: inherit;
+
+    &:is(:hover, :focus-visible) {
+      color: $site-footer-color--hover;
+      text-decoration: underline;
+    }
+  }
+
+  &-inner {
+    @extend %PageInner;
+
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    gap: $ds-spacings--medium;
+    padding-block: $ds-spacings--xx-large $ds-spacings--large;
+
+    @include breakpoint('tablet') {
+      gap: $ds-spacings--large;
+    }
+  }
+
+  &-svg {
+    position: absolute;
+    inset: 50% 0 auto auto;
+    z-index: -1;
+    width: min(50vw, px-to-rem(419));
+    max-height: calc(100% - 7rem);
+    aspect-ratio: 419 / 419;
+    background: url('../images/atom-big.svg') 100% 0 no-repeat;
+    background-size: contain;
+    pointer-events: none;
+    translate: 0 -50%;
+
+    @include breakpoint-between('mobile', 'desktop') {
+      display: none;
+    }
+  }
+
+  &-createAccount {
+    @extend %CtaBlock;
+    @extend %CtaBlock--primaryBg;
+
+    @include breakpoint('tablet') {
+      margin-block-end: $ds-spacings--standard;
+    }
+
+    .EditorialWysiwyg {
+      strong {
+        @extend %CtaBlock-title;
+      }
+    }
+  }
+
+  &-actions {
+    @extend %CtaBlock-actions;
+
+    a {
+      @extend %CtaBlock-cta;
+    }
+  }
+
+  &-menu {
+    ul {
+      display: grid;
+    }
+
+    > ul {
+      grid-template-columns: repeat(var(--_columns, 1), 1fr);
+      gap: $ds-spacings--large;
+
+      @include breakpoint('tablet') {
+        --_columns: 3;
+      }
+
+      @include breakpoint('desktop') {
+        gap: $ds-spacings--xxx-large;
+        padding-inline-end: 25%;
+      }
+
+      > li {
+        > :is(a, button, span) {
+          @extend %TextStyle-heading6;
+
+          display: inline-flex;
+          gap: $ds-spacings--x-small;
+          align-items: center;
+          padding-block: $ds-spacings--standard;
+          padding-inline-end: $ds-spacings--x-small;
+          border-block-end: solid $ds-border-width-small var(--_border-block-end-color, #{$ds-border-color-light});
+
+          &::after {
+            content: '';
+            flex-basis: 0 0 var(--main-menu-lvl-1-link-arrow-width);
+            width: var(--main-menu-lvl-1-link-arrow-width);
+            aspect-ratio: 1;
+            margin-inline-start: $ds-spacings--small;
+            border: solid currentColor;
+            border-width: 0 var(--main-menu-lvl-1-link-arrow-border-width) var(--main-menu-lvl-1-link-arrow-border-width) 0;
+            pointer-events: none;
+            rotate: var(--_rotate, -45deg);
+          }
+        }
+
+        &:is(a, button) {
+          &:is(:hover,:focus-visible) {
+            --_border-block-end-color: currentColor;
+          }
+        }
+
+        ul {
+          padding-block-start: $ds-spacings--standard;
+
+          a {
+            @extend %TextStyle-body2;
+
+            display: inline-block;
+            padding-block: $ds-spacings--small;
+          }
+        }
+      }
+    }
+  }
+
+  &-legals {
+    @include TextStyle-body3;
+
+    padding-block-start: $ds-spacings--medium;
+    border-block-start: solid $ds-border-width-small $ds-border-color-light;
+
+    ul {
+      display: grid;
+      gap: $ds-spacings--medium;
+
+      @include breakpoint('tablet') {
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: $ds-spacings--x-small;
+        justify-content: flex-end;
+      }
+    }
+  }
+}

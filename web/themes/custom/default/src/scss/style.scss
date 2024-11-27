@@ -1,0 +1,98 @@
+/* ==========================================================================
+
+   GLOBAL SASS
+   ========================================================================== */
+
+/* ABSTRACTS
+   ========================================================================== */
+@import "abstracts";
+
+/* Variables CSS
+   ========================================================================== */
+@import "variables-css";
+
+/* Libs
+   ========================================================================== */
+
+/* Normalize + soft Reset
+   ========================================================================== */
+@import "normalize";
+@import "reset";
+
+/* Fonts
+   ========================================================================== */
+@import "fonts";
+
+/* Layout
+   ========================================================================== */
+@import "layout";
+
+/* Components
+   ========================================================================== */
+
+// Atoms-base Always required for projects
+// @import "components/atoms/burger-menu";
+@import "components/atoms/buttons";
+@import "components/atoms/link-simple";
+@import "components/atoms/site-logo";
+@import "components/atoms/tags";
+@import "components/atoms/dev-tools";
+
+// @import "components/atoms/column-list";
+// @import "components/atoms/info-bubble";
+// @import "components/atoms/scroll-top";
+// @import "components/atoms/tooltip";
+
+// Atoms-common Frequently used for projects. Comment unused components
+@import "components/atoms/caption";
+
+// Atoms-specific Specific for this projects. Create your own components
+// /!\ Order Components by alphabetical ASC to avoid unnecessary conflicts
+
+// ---------------------------------------------------------------------------------
+
+// Molecules (base) Always required for projects
+@import "components/molecules/breadcrumb";
+
+@import "components/molecules/card";
+@import "components/molecules/ctas";
+@import "components/molecules/editorial-wysiwyg";
+
+// @import "components/molecules/main-menu";
+// @import "components/molecules/messages";
+// @import "components/molecules/pager";
+// @import "components/molecules/standard-form";
+// @import "components/molecules/tabs";
+
+// -----
+// @import "components/molecules/language-switcher";
+// @import "components/molecules/footer-menu";
+// @import "components/molecules/social-links";
+
+// Molecules-common Frequently used for projects. Comment unused components
+// @import "components/molecules/carousel";
+// @import "components/molecules/media-video";
+
+// Molecules-specific Specific for this projects. Create your own components
+// /!\ Order Components by alphabetical ASC to avoid unnecessary conflicts
+// @import "components/molecules/search-header";
+
+// ---------------------------------------------------------------------------------
+
+// Organisms-base Always required for projects
+@import "components/organisms/admin-toolbar";
+@import "components/organisms/content-block";
+
+// @import "components/organisms/hero-banner";
+// @import "components/organisms/page";
+// @import "components/organisms/site-footer";
+// @import "components/organisms/site-header";
+// @import "components/organisms/toggle-accordions";
+
+// Molecules-common Frequently used for projects. Comment unused components
+// @import "components/organisms/modal";
+// @import "components/organisms/not-found";
+
+// Organisms-specific Specific for this projects. Create your own components
+
+// /!\ Order Components by alphabetical ASC to avoid unnecessary conflicts

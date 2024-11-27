@@ -1,0 +1,40 @@
+uuid: f197fc40-de82-4b84-89d1-a67239d9364f
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.classic
+  module:
+    - ckeditor5
+format: classic
+editor: ckeditor5
+settings:
+  toolbar:
+    items:
+      - heading
+      - bold
+      - italic
+      - specialCharacters
+      - underline
+      - subscript
+      - superscript
+      - link
+      - removeFormat
+      - '|'
+      - bulletedList
+      - numberedList
+  plugins:
+    ckeditor5_heading:
+      enabled_headings:
+        - heading2
+        - heading3
+        - heading4
+        - heading5
+        - heading6
+    ckeditor5_list:
+      properties:
+        reversed: true
+        startIndex: true
+      multiBlock: true
+image_upload:
+  status: false

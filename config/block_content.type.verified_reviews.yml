@@ -1,0 +1,8 @@
+uuid: 67efa307-60e7-4f86-b6cb-3205f71cab4e
+langcode: en
+status: true
+dependencies: {  }
+id: verified_reviews
+label: 'Avis vérifiés'
+revision: false
+description: 'Bloc permettant l''affichage des 2 badges "Avis clients" ("Google" et "Avis vérifiés") et de 3 avis détaillés mis en en avant.'

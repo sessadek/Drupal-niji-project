@@ -1,0 +1,92 @@
+/* ==========================================================================
+   MediaVideo
+   ========================================================================== */
+.MediaVideo {
+  --image-fit-aspect-ratio: 16/9; // Force aspect ratio for video
+
+  position: relative;
+  aspect-ratio: var(--image-fit-aspect-ratio);
+
+  &-trigger,
+  iframe,
+  video {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+  }
+
+  iframe {
+    overflow: hidden;
+  }
+
+  &-trigger {
+    --_bg: rgb(255 255 255 / 20%);
+    --_square-size: #{px-to-rem(80)};
+    --_square-bg: #{$ds-colors-brand-primary};
+
+    @include breakpoint('tablet') {
+      --_square-size: #{px-to-rem(150)};
+    }
+
+    z-index: 2;
+
+    .-playing & {
+      display: none;
+    }
+
+    &:hover,
+    &:focus {
+      --_bg: rgb(255 255 255 / 10%);
+      --_square-bg: #{$ds-colors-brand-primary-600};
+    }
+
+    &:active {
+      --_square-bg: #{$ds-colors-brand-primary-700};
+    }
+
+    span {
+      position: absolute;
+      inset: auto 0 0 auto;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      min-width: px-to-rem(400);
+      height: var(--_square-size);
+      padding-block: $ds-spacings--small;
+      padding-inline: calc(var(--_square-size) + #{$ds-spacings--medium}) $ds-spacings--medium;
+      background: var(--_bg);
+      color: $ds-colors-grayscale-white;
+      text-align: start;
+
+      @include breakpoint-between('mobile', 'tablet') {
+        overflow: hidden;
+        width: var(--_square-size);
+        min-width: 0;
+        padding: 0;
+      }
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--_square-size);
+        aspect-ratio: 1;
+      }
+
+      &::before {
+        background: var(--_square-bg);
+      }
+
+      &::after {
+        background: currentColor;
+        mask-image: url('../images/icons/play-circle.svg');
+        mask-position: center;
+        mask-repeat: no-repeat;
+        mask-size: auto;
+      }
+    }
+  }
+}

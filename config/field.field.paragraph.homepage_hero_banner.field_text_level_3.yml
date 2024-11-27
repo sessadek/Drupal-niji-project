@@ -1,0 +1,24 @@
+uuid: d4986b39-87b4-4cc8-8c04-87b2e46aba0d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text_level_3
+    - filter.format.classic
+    - paragraphs.paragraphs_type.homepage_hero_banner
+  module:
+    - text
+id: paragraph.homepage_hero_banner.field_text_level_3
+field_name: field_text_level_3
+entity_type: paragraph
+bundle: homepage_hero_banner
+label: 'Texte - Niveau 3'
+description: "Texte affiché sur la 3ème ligne de titre du header de la page d'accueil.<br>\r\nPour forcer un passage à la ligne suivante, utilisez la balise &lt;br&gt;."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - classic
+field_type: text

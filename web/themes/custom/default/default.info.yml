@@ -1,0 +1,20 @@
+name: Niji Default custom theme
+type: theme
+description: 'The default custom theme used at Niji. Please update the name and description to match your project requirements.'
+core_version_requirement: ^10
+php: 8.1
+engine: twig
+base theme: stable9
+package: Custom
+dependencies:
+  - drupal:vite
+libraries:
+  - default/global
+regions:
+  header: Header
+  admin: Administration
+  highlighted: Highlighted
+  content: Content
+  footer: Footer
+
+# In production consider adding "hidden: true" to prevent admin user from disabling this theme from the UI.

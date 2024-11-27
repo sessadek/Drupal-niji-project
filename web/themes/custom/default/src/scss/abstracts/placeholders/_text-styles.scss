@@ -1,0 +1,115 @@
+/* ==========================================================================
+   PLACEHOLDERS - TEXT STYLES
+   ========================================================================== */
+
+/// Heading style level #0
+/// @name TextStyle-heading0
+%TextStyle-heading0 {
+  @include TextStyle-heading0;
+}
+
+/// Heading style level #1
+/// @name TextStyle-heading1
+%TextStyle-heading1 {
+  @include TextStyle-heading1;
+}
+
+/// Heading style level #2
+/// @name TextStyle-heading2
+%TextStyle-heading2 {
+  @include TextStyle-heading2;
+}
+
+/// Heading style level #2 alt
+/// @name TextStyle-heading2--alt
+%TextStyle-heading2--alt {
+  @include TextStyle-heading2--alt;
+}
+
+/// Heading style level #3
+/// @name TextStyle-heading3
+%TextStyle-heading3 {
+  @include TextStyle-heading3;
+
+  color: var(--text-color-primary);
+}
+
+/// Heading style level #4
+/// @name TextStyle-heading4
+%TextStyle-heading4 {
+  @include TextStyle-heading4;
+}
+
+/// Heading style level #5
+/// @name TextStyle-heading5
+%TextStyle-heading5 {
+  @include TextStyle-heading5;
+}
+
+/// Heading style level #6
+/// @name TextStyle-heading6
+%TextStyle-heading6 {
+  @include TextStyle-heading6;
+}
+
+/// Body text style level #0 (for intro paragraph)
+/// @name TextStyle-body0
+%TextStyle-body0 {
+  @include TextStyle-body0;
+}
+
+/// Body text style level #1 (for standard paragraph)
+/// @name TextStyle-body1
+%TextStyle-body1 {
+  @include TextStyle-body1;
+}
+
+/// Body text style level #2 (for small paragraph)
+/// @name TextStyle-body2
+%TextStyle-body2 {
+  @include TextStyle-body2;
+}
+
+/// Body text style level #3 (for small paragraph)
+/// @name TextStyle-body3
+
+%TextStyle-body3 {
+  @include TextStyle-body3;
+}
+
+/// Caption style (example: error messages,  legend or details)
+/// @name TextStyle-caption
+%TextStyle-caption {
+  @include TextStyle-caption;
+}
+
+/// Label style (example: tag labels)
+/// @name TextStyle-label
+
+%TextStyle-label {
+  @include TextStyle-label;
+}
+
+/// Alternate style for highlighted body text (example: blockquote)
+/// @name TextStyle-headline
+%TextStyle-headline {
+  @include TextStyle-headline;
+}
+
+/// Button style #1
+/// @name TextStyle-button--small
+%TextStyle-button--small {
+  @include TextStyle-button--small;
+}
+
+/// Button style #2
+/// @name TextStyle-button--medium
+%TextStyle-button--medium {
+  @include TextStyle-button--medium;
+}
+
+/// Button style #1
+/// @name TextStyle-link1
+%TextStyle-link1 {
+  @include TextStyle-link1;
+}

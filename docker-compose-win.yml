@@ -1,0 +1,26 @@
+version: "3"
+
+volumes:
+  database:
+  tmp:
+
+services:
+  php:
+    user: root
+    command: "php-fpm -R"
+    environment:
+      PHP_FPM_USER: root
+      PHP_FPM_GROUP: root
+    volumes:
+      - ./:/var/www/html
+      - tmp:/tmp:delegated
+    ports:
+      - 9001:9000
+
+  apache:
+    volumes:
+      - ./:/var/www/html
+
+  mariadb:
+    volumes:
+      - database:/var/lib/mysql:delegated

@@ -1,0 +1,21 @@
+uuid: bfabee31-a31b-4e82-b6ee-062fb4f9dd08
+langcode: en
+status: true
+dependencies:
+  theme:
+    - default
+id: default_promomessage
+theme: default
+region: header
+weight: 0
+provider: null
+plugin: 'block_content:1cc461c8-a4c8-4bdd-bd50-8a7ea62fb381'
+settings:
+  id: 'block_content:1cc461c8-a4c8-4bdd-bd50-8a7ea62fb381'
+  label: 'promo message'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility: {  }

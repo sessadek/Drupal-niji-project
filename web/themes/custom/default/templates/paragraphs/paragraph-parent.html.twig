@@ -1,0 +1,23 @@
+{% set classes = [
+  'ContentBlock',
+] %}
+
+<div {{ attributes.addClass(classes) }}>
+  {% block wrapper %}
+    <div class="ContentBlock-wrapper">
+      {% block title %}
+        {% if content.field_title | render %}
+          <h2 class="ContentBlock-title">
+            {{ content.field_title['#items'].0.value }}
+          </h2>
+        {% endif %}
+      {% endblock title %}
+      <div class="ContentBlock-inner">
+        <div class="ContentBlock-contents">
+          {% block content %}
+          {% endblock content %}
+        </div>
+      </div>
+    </div>
+  {% endblock wrapper %}
+</div>

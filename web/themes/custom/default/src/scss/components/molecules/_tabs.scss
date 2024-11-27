@@ -1,0 +1,26 @@
+/* ==========================================================================
+   Tabs
+   ========================================================================== */
+.Tabs {
+  @extend %Tabs;
+
+  &-nav {
+    &[role="tablist"] {
+      @extend %Tabs-nav;
+    }
+  }
+
+  &-panel {
+    &[hidden] {
+      display: none !important;
+    }
+  }
+
+  &.-bordered {
+    .Tabs {
+      &-nav {
+        @extend %Tabs-nav--bordered;
+      }
+    }
+  }
+}

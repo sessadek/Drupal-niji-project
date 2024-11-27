@@ -1,0 +1,150 @@
+/* ==========================================================================
+   Buttons - Placeholders
+   ========================================================================== */
+
+%Button {
+  @include Button;
+
+  &:focus-visible,
+  &:is(a, button):hover,
+  a:focus-visible &,
+  a:hover &,
+  &--hover {
+    @include Button--hover;
+  }
+
+  &:focus-visible,
+  &--focus-visible {
+    @include Button--focus-visible;
+  }
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  & + .ajax-progress {
+    display: none;
+  }
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  &:has(+ .ajax-progress) {
+    @include Button--loading;
+  }
+
+  &[disabled],
+  &--disabled {
+    @include Button--disabled;
+  }
+
+  &:active,
+  &--active {
+    @include Button--active;
+  }
+
+  &--primary {
+    @include Button--primary;
+  }
+
+  &--secondary {
+    @include Button--secondary;
+  }
+
+  &--tertiary {
+    @include Button--tertiary;
+  }
+
+  &--tag {
+    @include Button--tag;
+
+    &.-active {
+      @include Button--tag--active;
+    }
+  }
+
+  &--outline {
+    @include Button--outline;
+  }
+
+  &--small {
+    @include Button--small;
+  }
+
+  &--full {
+    @include Button--full;
+  }
+
+  &--square {
+    @include Button--square;
+
+    &--small {
+      @include Button--square--small;
+    }
+  }
+
+  &--icon {
+    @include Button--icon;
+
+    &--only {
+      @include Button--icon--only;
+
+      &--small {
+        @include Button--icon--only--small;
+      }
+    }
+
+    // positions
+    &--left {
+      @include Button--icon--left;
+    }
+
+    &--right {
+      @include Button--icon--right;
+    }
+
+    // size
+    &--small {
+      @include Button--icon--small;
+    }
+
+    // icons
+    &--arrowLeft {
+      @include Button--icon--arrowLeft;
+    }
+
+    &--bigArrowLeft {
+      @include Button--icon--bigArrowLeft;
+    }
+
+    &--arrowRight {
+      @include Button--icon--arrowRight;
+    }
+
+    &--bigArrowRight {
+      @include Button--icon--bigArrowRight;
+    }
+
+    &--close {
+      @include Button--icon--close;
+    }
+  }
+
+  &-span {
+    @include Button-span;
+  }
+
+  &Close {
+    @extend %Button;
+    @extend %Button--small;
+    @extend %Button--tertiary;
+    @extend %Button--icon;
+    @extend %Button--icon--small;
+    @extend %Button--icon--right;
+    @extend %Button--icon--close;
+
+    --button-padding-block: #{$ds-spacings--semi};
+
+    height: #{$ds-spacings--x-large};
+
+    &:is(:hover, :focus-visible) {
+      text-decoration: underline;
+      text-underline-offset: $ds-spacings--xx-small;
+    }
+  }
+}

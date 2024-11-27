@@ -1,0 +1,29 @@
+/* ==========================================================================
+   SiteLogo
+   ========================================================================== */
+
+:root {
+  --site-logo-width: #{px-to-rem(130)};
+
+  @include breakpoint('desktop') {
+    --site-logo-width: #{px-to-rem(148)};
+  }
+}
+
+.SiteLogo {
+  height: var(--site-header-top-height, px-to-rem(70));
+  margin-inline-end: auto;
+
+  &-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: inherit;
+
+    img {
+      width: var(--site-logo-width);
+      aspect-ratio: 148 / 20;
+    }
+  }
+}

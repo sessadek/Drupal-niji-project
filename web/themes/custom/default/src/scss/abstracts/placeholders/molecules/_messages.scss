@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Messages - Placeholders
+   ========================================================================== */
+
+%Messages {
+  position: sticky;
+  inset-block-start: calc(var(--drupal-displace-offset-top) + var(--site-header-height));
+  z-index: 99;
+  max-height: var(--messages-max-height);
+  pointer-events: none;
+
+  &-group {
+    @extend %PageWrapper;
+
+    background: var(--messages-bg-color);
+    color: var(--messages-text-color);
+    pointer-events: auto;
+
+    &-inner {
+      @extend %PageInner;
+      @extend %TextStyle-body1;
+
+      padding-block: $ds-spacings--medium;
+
+      .-closable & {
+        padding-inline-end: $ds-spacings--large;
+      }
+    }
+
+    &--info {
+      --messages-bg-color: #{$ds-colors-ui-info};
+    }
+
+    &--status {
+      --messages-bg-color: #{$ds-colors-ui-success};
+      --messages-text-color: #{$ds-colors-grayscale-white};
+    }
+
+    &--warning {
+      --messages-bg-color: #{$ds-colors-ui-warning};
+      --messages-text-color: #{$ds-colors-grayscale-white};
+    }
+
+    &--warning-alt {
+      --messages-bg-color: #{$ds-colors-brand-tertiary};
+      --messages-text-color: #{$ds-colors-grayscale-white};
+    }
+
+    &--error {
+      --messages-bg-color: #{$ds-colors-ui-error};
+      --messages-text-color: #{$ds-colors-grayscale-white};
+    }
+
+    &--center {
+      text-align: center;
+    }
+
+    &-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $ds-spacings--small;
+      justify-content: center;
+      padding-block-start: $ds-spacings--small;
+    }
+
+    .LinkSimple {
+      --link-simple-color: #{$ds-colors-grayscale-white};
+    }
+  }
+
+  a:not(.Button, .LinkSimple) {
+    color: inherit;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  ul {
+    padding-inline-start: $ds-spacings--large;
+    list-style: disc;
+
+    li {
+      &+li {
+        margin-block-start: $ds-spacings--xxx-small;
+      }
+    }
+  }
+}

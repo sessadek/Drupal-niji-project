@@ -1,0 +1,559 @@
+stages:
+  - build-dev
+  - quality-gates
+  - build-app
+  - publish-artifact
+  - package-docker
+  - check-image
+  - deploy-release
+  - expose-release
+  - post-quality-gates
+  - drop-release
+
+variables:
+  CI_DEBUG_TRACE: "false"
+  PHP_DOCKER_IMAGE_NAME: "${CI_PROJECT_PATH_SLUG}-php"
+  APACHE_DOCKER_IMAGE_NAME: "${CI_PROJECT_PATH_SLUG}-apache"
+  APACHE_VERSION: "2.4"
+  PHP_VERSION: "8.1"
+  NODE_VERSION: "18"
+
+###################################################################################################
+# Quality Steps
+###################################################################################################
+
+#Define the composer cache available for all pipelines, all jobs and all branches.
+cache:
+  key: composer-cache
+  paths:
+    - .composer-cache/
+
+#Build dev requirements for quality gates execution.
+build-for-quality-gates:
+  image: composer
+  stage: build-dev
+  script:
+    - COMPOSER_CACHE_DIR=.composer-cache composer install --no-interaction --ignore-platform-reqs
+  artifacts:
+    paths:
+      - ./vendor
+      - ./web/core
+      - ./web/modules/contrib
+      - ./web/themes/contrib
+      - ./web/profiles/contrib
+    expire_in: 30 mins
+    when: always
+  tags:
+    - ci
+
+#PHPStan
+static-analysis-phpstan:
+  image: php:$PHP_VERSION-cli
+  stage: quality-gates
+  script: "vendor/bin/phpstan analyse --memory-limit=-1 2>&1 | tee reportPhpStan.txt"
+  artifacts:
+    paths:
+      - ./reportPhpStan.txt
+    expire_in: 1 week
+    when: always
+  cache: {}
+  tags:
+    - ci
+
+#PHPCS
+static-analysis-phpcs:
+  image: php:$PHP_VERSION-cli
+  stage: quality-gates
+  script: "vendor/bin/phpcs --standard=phpcs.xml.dist 2>&1 | tee reportPhpCS.txt"
+  artifacts:
+    paths:
+      - ./reportPhpCS.txt
+    expire_in: 1 week
+    when: always
+  cache: {}
+  tags:
+    - ci
+
+#PHPMD
+static-analysis-phpmd:
+  image: php:$PHP_VERSION-cli
+  stage: quality-gates
+  script: "vendor/bin/phpmd ./web/modules/custom,./web/themes/custom,./web/profiles/custom text phpmd.rules.xml.dist 2>&1 | tee reportPhpMD.html"
+  artifacts:
+    paths:
+      - ./reportPhpMD.html
+    expire_in: 1 week
+    when: always
+  cache: {}
+  tags:
+    - ci
+
+#PHPCPD
+static-analysis-phpcpd:
+  image: php:$PHP_VERSION-cli
+  stage: quality-gates
+  script: "vendor/bin/phpcpd ./web/modules/custom ./web/themes/custom ./web/profiles/custom 2>&1 | tee reportPhpCPD.txt || true"
+  artifacts:
+    paths:
+      - ./reportPhpCPD.txt
+    expire_in: 1 week
+    when: always
+  cache: {}
+  tags:
+    - ci
+
+check-code-vulnebarities:
+  image: aquasec/trivy:latest
+  stage: quality-gates
+  allow_failure: true
+  cache: {}
+  script: trivy --exit-code 1 fs --security-checks vuln . 2>&1 | tee reportTrivy.txt
+  artifacts:
+    paths:
+      - ./reportTrivy.txt
+    expire_in: 1 week
+    when: always
+  tags:
+    - ci
+
+#Sonarqube
+sonarqube:
+  image: sonarsource/sonar-scanner-cli
+  stage: quality-gates
+  retry: 1
+  dependencies: []
+  variables:
+    BROWSERSLIST_IGNORE_OLD_DATA: "true"
+  script:
+    - |
+      sonar-scanner -X -Dsonar.host.url="http://sonarqube-sonarqube.default:9000" \
+      -Dsonar.projectKey=${CI_PROJECT_NAME} \
+      -Dsonar.gitlab.commit_sha=${CI_COMMIT_SHA} \
+      -Dsonar.gitlab.ref_name=${CI_BUILD_REF_NAME} \
+      -Dsonar.projectName="${GCLOUD_PROJECT_ID}" \
+      -Dsonar.sources="./web/modules/custom,./web/themes/custom,./web/profiles/custom" \
+      -Dsonar.login="${SONAR_TOKEN}" \
+      -Dsonar.gitlab.project_id=${CI_PROJECT_PATH} \
+      -Dsonar.gitlab.ci_merge_request_iid=${CI_MERGE_REQUEST_IID} \
+      -Dsonar.analysis.mode="publish" \
+      -Dsonar.language="php"
+  cache: {}
+  allow_failure: true
+  tags:
+    - ci
+
+###################################################################################################
+# Build & Package - Cloud Build Steps
+###################################################################################################
+
+#Template injected on steps that needs credentials to connect to Google Cloud Builder and other Gcloud services
+.gcloudAuth: &gcloudAuth
+  - echo ${GCLOUD_GITLAB_RUNNER_SERVICE_KEY} | base64 -d -i > /tmp/gcloud-gitlab-runner-service-key.json
+  - gcloud auth activate-service-account gitlab-runner@${GCLOUD_PROJECT_ID}.iam.gserviceaccount.com --key-file /tmp/gcloud-gitlab-runner-service-key.json
+  - gcloud config set project ${GCLOUD_PROJECT_ID}
+  - gcloud --quiet container clusters get-credentials ${CLOUDSDK_CONTAINER_CLUSTER} --zone ${GCLOUD_DEFAULT_ZONE}
+
+.gcloudAuth-kaniko: &gcloudAuth-kaniko
+  - export GOOGLE_APPLICATION_CREDENTIALS=/kaniko/config.json
+  - echo ${GCLOUD_GITLAB_RUNNER_SERVICE_KEY} | base64 -d -i > /kaniko/config.json
+
+.common-build-steps: &common-build-steps
+  tags:
+    - ci
+  only:
+    - master
+    - develop
+    - /^release.*/
+    - /^feature.*/
+    - /^fix.*/
+
+#Create application package
+build-composer:
+  image: composer
+  stage: build-app
+  <<: *common-build-steps
+  dependencies: []
+  script:
+      - COMPOSER_CACHE_DIR=.composer-cache ./automation/bin/build.sh
+  artifacts:
+    paths:
+      - ./
+    exclude:
+      - ./web/themes/**/*
+    expire_in: 30 mins
+    when: on_success
+
+#Create application package
+build-theme:
+  image: node:$NODE_VERSION
+  stage: build-app
+  <<: *common-build-steps
+  cache: {}
+  script:
+    - cd web/themes/custom/default
+    - pwd
+    - npm install
+    - npm run build
+    - npm install --omit=dev
+  dependencies: []
+  artifacts:
+    paths:
+      - ./web/themes/
+    expire_in: 30 mins
+    when: on_success
+
+publish-artifact:
+  image: google/cloud-sdk:alpine
+  stage: publish-artifact
+  <<: *common-build-steps
+  before_script: *gcloudAuth
+  cache: {}
+  dependencies:
+    - build-composer
+    - build-theme
+  script:
+    - apk add --no-cache tar
+    - ./automation/bin/create-artifact.sh
+    - gsutil cp artifact.tar.gz gs://${GCLOUD_ARTIFACTS_BUCKET}/${CI_COMMIT_REF_SLUG}.tar.gz
+    - gsutil cp artifact.tar.gz gs://${GCLOUD_ARTIFACTS_BUCKET}/${CI_COMMIT_REF_SLUG}-latest.tar.gz
+  artifacts:
+    paths:
+      - artifact.tar.gz
+    expire_in: 30 mins
+    when: on_success
+
+docker-kaniko-php:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  stage: package-docker
+  <<: *common-build-steps
+  before_script: *gcloudAuth-kaniko
+  dependencies:
+    - publish-artifact
+  script:
+    - /kaniko/executor --context ${CI_PROJECT_DIR} --build-arg PHP_VERSION=${PHP_VERSION} --dockerfile ${CI_PROJECT_DIR}/automation/docker/DockerfilePHP --destination eu.gcr.io/${GCLOUD_PROJECT_ID}/img/drupal-php:${CI_COMMIT_REF_SLUG} --destination eu.gcr.io/${GCLOUD_PROJECT_ID}/img/drupal-php:${CI_COMMIT_REF_SLUG}-latest
+
+docker-kaniko-apache:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  stage: package-docker
+  <<: *common-build-steps
+  before_script: *gcloudAuth-kaniko
+  dependencies:
+    - publish-artifact
+  script:
+    - /kaniko/executor --context ${CI_PROJECT_DIR} --build-arg APACHE_VERSION=${APACHE_VERSION} --dockerfile ${CI_PROJECT_DIR}/automation/docker/DockerfileApache --destination eu.gcr.io/${GCLOUD_PROJECT_ID}/img/drupal-apache:${CI_COMMIT_REF_SLUG} --destination eu.gcr.io/${GCLOUD_PROJECT_ID}/img/drupal-apache:${CI_COMMIT_REF_SLUG}-latest
+
+################################################################################
+# SCAN DOCKER IMAGES
+################################################################################
+
+check-docker-php:
+  image: aquasec/trivy:latest
+  stage: check-image
+  <<: *common-build-steps
+  allow_failure: true
+  dependencies:
+    - docker-kaniko-php
+  script:
+    - trivy --exit-code 1 image eu.gcr.io/${GCLOUD_PROJECT_ID}/img/drupal-php:${CI_COMMIT_REF_SLUG}-latest
+
+check-docker-apache:
+  image: aquasec/trivy:latest
+  stage: check-image
+  <<: *common-build-steps
+  allow_failure: true
+  dependencies:
+    - docker-kaniko-apache
+  script:
+    - trivy --exit-code 1 image eu.gcr.io/${GCLOUD_PROJECT_ID}/img/drupal-apache:${CI_COMMIT_REF_SLUG}-latest
+
+###################################################################################################
+# Template
+###################################################################################################
+
+#Template injected on steps that needs credentials to connect to Google Services and credentials to Helm Tiller Pod
+.gcloud_helmAuth: &gcloud_helmAuth
+  - export MIN_CI_COMMIT_SHA=${CI_COMMIT_SHA:0:8}
+  - echo ${GCLOUD_GITLAB_RUNNER_SERVICE_KEY} | base64 -d > ~/gcloud-gitlab-runner-service-key.json
+  - gcloud auth activate-service-account gitlab-runner@${GCLOUD_PROJECT_ID}.iam.gserviceaccount.com --key-file ~/gcloud-gitlab-runner-service-key.json
+  - gcloud config set project ${GCLOUD_PROJECT_ID}
+  - gcloud --quiet container clusters get-credentials ${CLOUDSDK_CONTAINER_CLUSTER} --zone ${GCLOUD_DEFAULT_ZONE}
+  - cd automation/gke/kubernetes/charts/drupal-niji
+  - helm repo add bitnami https://charts.bitnami.com/bitnami
+  - helm repo add codecentric https://codecentric.github.io/helm-charts
+  - helm dependency update
+
+# purge pv and pvc of mariadb and redis
+# Clean PVC & PV in order for a new install (NOT TO USE ON UPGRADE) to start on a proper state
+.clean-pvc: &clean-pvc |
+  pvRedisDB=$(kubectl get pvc -l app.kubernetes.io/name=redis,app.kubernetes.io/instance=${RELEASE_NAME} -o=jsonpath='{range .items[*]}{.spec.volumeName}' -n ${ENV})
+  pvMariaDB=$(kubectl get pvc -l app.kubernetes.io/name=mariadb,app.kubernetes.io/instance=${RELEASE_NAME} -o=jsonpath='{range .items[*]}{.spec.volumeName}' -n ${ENV})
+  kubectl delete pvc -l app.kubernetes.io/name=mariadb,app.kubernetes.io/instance=${RELEASE_NAME} -n ${ENV}
+  kubectl delete pvc -l app.kubernetes.io/name=redis,app.kubernetes.io/instance=${RELEASE_NAME} -n ${ENV}
+  nofailIfNoPV=`kubectl delete pv $pvRedisDB $pvMariaDB -n ${ENV} || :`
+
+# Used in cas of pre/post install/update scripts, in order to clean them before installing
+#
+.clean-job: &clean-job |
+  nofail=`kubectl delete job ${RELEASE_NAME} -n ${ENV} || :`
+
+
+.install-release-script: &install-release-script |
+  helm install ${RELEASE_NAME} . \
+  --set ingress.hostname=drupal-${RELEASE_NAME}.${BASE_DOMAIN} \
+  --set image.repository=${GCLOUD_PROJECT_ID}/img/drupal-php \
+  --set image.tag=${CI_COMMIT_REF_SLUG} \
+  --set apache.image.repository=${GCLOUD_PROJECT_ID}/img/drupal-apache \
+  --set apache.image.tag=${CI_COMMIT_REF_SLUG} \
+  --namespace ${ENV} \
+  --wait
+
+.update-release-script: &update-release-script |
+  # find the deployed pod and set maintenance mode
+  drupalPodUpgrade=`kubectl get pod --ignore-not-found=true -n ${ENV} --selector=app=${RELEASE_NAME}-drupal-niji -o=jsonpath='{.items[0].metadata.name}' --field-selector=status.phase=Running`
+  kubectl exec -it --namespace ${ENV} $drupalPodUpgrade --container drupal -- sh -c "cd /var/www/html/web/sites/default/ && drush sset system.maintenance_mode 1 && drush cr"
+  # find existing db password
+  userPassword=`kubectl get secret --namespace ${ENV} ${RELEASE_NAME}-mariadb -o jsonpath="{.data.mariadb-password}" | base64 -d`
+  rootPassword=`kubectl get secret --namespace ${ENV} ${RELEASE_NAME}-mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d`
+  helm upgrade ${RELEASE_NAME} . \
+    --set ingress.hostname=drupal-${RELEASE_NAME}.${BASE_DOMAIN} \
+    --set image.repository=${GCLOUD_PROJECT_ID}/img/drupal-php \
+    --set image.tag=${CI_COMMIT_REF_SLUG} \
+    --set apache.image.repository=${GCLOUD_PROJECT_ID}/img/drupal-apache \
+    --set apache.image.tag=${CI_COMMIT_REF_SLUG} \
+    --set mariadb.rootUser.password=${rootPassword} \
+    --set mariadb.db.password=${userPassword} \
+    --namespace ${ENV} \
+    --wait
+
+.purge-release: &purge-release |
+  nofail=`helm uninstall ${RELEASE_NAME} || :`
+
+.post-install: &post-install |
+  # find the deployed pod
+  drupalPod=`kubectl get pod --ignore-not-found=true -n ${ENV} --selector=app=${RELEASE_NAME}-drupal-niji -o=jsonpath='{.items[0].metadata.name}' --field-selector=status.phase=Running`
+  # run installation script in the php container inside the pod
+  kubectl exec -it $drupalPod --container drupal --namespace ${ENV} -- /var/www/html/automation/bin/install.sh
+  kubectl exec -it $drupalPod --container drupal --namespace ${ENV} -- /var/www/html/automation/bin/reset_password.sh
+
+.post-upgrade: &post-upgrade |
+  # find the deployed pod
+  drupalPod=`kubectl get pod --ignore-not-found=true -n ${ENV} --selector=app=${RELEASE_NAME}-drupal-niji -o=jsonpath='{.items[0].metadata.name}' --field-selector=status.phase=Running`
+  # run upgrade script in the php container inside the pod and disable maintenance
+  kubectl exec -it --namespace ${ENV} $drupalPod --container drupal -- /var/www/html/automation/bin/update.sh
+  kubectl exec -it --namespace ${ENV} $drupalPod --container drupal -- sh -c "cd /var/www/html/web/sites/default/ && drush sset system.maintenance_mode 0 && drush cr"
+
+
+#
+#  MACRO GITLABCI COMMONS
+#
+
+.common-release-step: &common-release-step
+  image: eu.gcr.io/public-docker-image/niji/helm-gke:helm3
+  before_script: *gcloud_helmAuth
+  retry: 1
+
+.install-release: &install-release
+  stage: deploy-release
+  <<: *common-release-step
+  script:
+    # purge the release ! if not done the next install will fail
+    - *purge-release
+    - *clean-job
+    - *clean-pvc
+    - *install-release-script
+    - *post-install
+
+.update-release: &update-release
+  stage: deploy-release
+  <<: *common-release-step
+  script:
+    - *update-release-script
+    - *post-upgrade
+
+.drop-release: &drop-release
+  stage: drop-release
+  <<: *common-release-step
+  script:
+    - *purge-release
+    - *clean-job
+    - *clean-pvc
+
+
+#Web performance analysis
+.web-analysis-script: &web-analysis-script
+  # Install Lighthouse
+  - npm i -g lighthouse
+  # backup default ingress whitelist
+  - whitelistBackup=`kubectl get ingress ${RELEASE_NAME}-drupal-niji -n ${ENV} -o jsonpath="{.metadata.annotations['ingress\.kubernetes\.io/whitelist-source-range']}"`
+  # get host IP
+  - hostsIP=`kubectl get node -o=jsonpath='{range .items[*]}{","}{.status.addresses[?(@.type=="ExternalIP")].address}{"/32"}{end}'`
+  - newWhiteList="${whitelistBackup}${hostsIP}"
+  # add hots IP in whitelist in order for test to be possible
+  - kubectl annotate ingress ${RELEASE_NAME}-drupal-niji -n ${ENV} --overwrite ingress.kubernetes.io/whitelist-source-range=$newWhiteList
+  # Run Lighthouse test
+  - lighthouse --chrome-flags="--headless --no-sandbox" http://drupal-${RELEASE_NAME}.${BASE_DOMAIN} --output html --output-path ./report.html
+  # set initial whitelist
+  - kubectl annotate ingress ${RELEASE_NAME}-drupal-niji -n ${ENV} --overwrite ingress.kubernetes.io/whitelist-source-range=$whitelistBackup
+
+.web-analysis-common: &web-analysis-common
+  image: eu.gcr.io/public-docker-image/niji/node-chrome-gcloud
+  stage: post-quality-gates
+  before_script: *gcloudAuth
+  script:
+    - *web-analysis-script
+  artifacts:
+    paths:
+      - ./report.html
+    expire_in: 1 week
+  when: manual
+
+###################################################################################################
+# INTEG Steps
+###################################################################################################
+
+.commons-integ: &commons-integ
+  variables:
+    ENV: "integ"
+    RELEASE_NAME: "${ENV}-${CI_COMMIT_REF_SLUG}"
+  only:
+    - develop
+  tags:
+    - integ
+
+deploy-integ:
+  <<: *commons-integ
+  <<: *install-release
+
+drop-integ:
+  <<: *commons-integ
+  <<: *drop-release
+
+###################################################################################################
+# FEATURE Steps
+###################################################################################################
+
+.commons-feature: &commons-feature
+  variables:
+    ENV: "feature"
+    RELEASE_NAME: "${ENV}-${CI_COMMIT_REF_SLUG}"
+  when: manual
+  tags:
+    - feature
+  only:
+    - /^feature.*/
+
+deploy-feature:
+  <<: *commons-feature
+  <<: *install-release
+
+update-feature:
+  <<: *commons-feature
+  <<: *update-release
+
+drop-feature:
+  <<: *commons-feature
+  <<: *drop-release
+
+web-analysis-feature:
+  <<: *commons-feature
+  <<: *web-analysis-common
+
+###################################################################################################
+# REC Steps
+###################################################################################################
+
+.commons-rec: &commons-rec
+  variables:
+    ENV: "rec"
+    RELEASE_NAME: "${ENV}-${CI_COMMIT_REF_SLUG}"
+  when: manual
+  tags:
+    - rec
+  only:
+    - /^release.*/
+
+deploy-rec:
+  <<: *commons-rec
+  <<: *install-release
+
+update-rec:
+  <<: *commons-rec
+  <<: *update-release
+
+drop-rec:
+  <<: *commons-rec
+  <<: *drop-release
+
+web-analysis-rec:
+  <<: *commons-rec
+  <<: *web-analysis-common
+
+###################################################################################################
+# DEMO Steps
+###################################################################################################
+
+.commons-demo: &commons-demo
+  variables:
+    ENV: "demo"
+    RELEASE_NAME: "${ENV}-${CI_COMMIT_REF_SLUG}"
+  when: manual
+  tags:
+    - demo
+  only:
+    - master
+
+deploy-demo:
+  <<: *commons-demo
+  <<: *install-release
+
+update-demo:
+  <<: *commons-demo
+  <<: *update-release
+
+drop-demo:
+  <<: *commons-demo
+  <<: *drop-release
+
+web-analysis-demo:
+  <<: *commons-demo
+  <<: *web-analysis-common
+
+###################################################################################################
+# Expose Steps
+###################################################################################################
+
+.commons-sign: &commons-sign
+  image: eu.gcr.io/public-docker-image/niji/gsutil-ssl:latest
+  stage: expose-release
+  before_script:
+    # authentication phase
+    - echo ${GCLOUD_GITLAB_RUNNER_SERVICE_KEY} | base64 -d > ~/gcloud-gitlab-runner-service-key.json
+    - gcloud auth activate-service-account gitlab-runner@${GCLOUD_PROJECT_ID}.iam.gserviceaccount.com --key-file ~/gcloud-gitlab-runner-service-key.json
+    - gcloud config set project ${GCLOUD_PROJECT_ID}
+    - echo ${GCLOUD_ARTIFACT_SIGNED_SERVICE_KEY} | base64 -d > ~/gcloud-arti-signed-service-key.json
+  when: manual
+  allow_failure: false
+  tags:
+    - ci
+  only:
+    - /^release.*/
+    - tags
+
+# Sign release artefact tgz
+sign-artefact-tgz-release:
+  <<: *commons-sign
+  script:
+    - gsutil signurl -d 7d  ~/gcloud-arti-signed-service-key.json gs://${GCLOUD_ARTIFACTS_BUCKET}/${CI_COMMIT_REF_SLUG}.tar.gz
+
+# Sign release image
+sign-artefact-docker-release:
+  <<: *commons-sign
+  script:
+    - gsutil signurl -d 7d  ~/gcloud-arti-signed-service-key.json gs://${GCLOUD_ARTIFACTS_BUCKET}/${CI_COMMIT_REF_SLUG}.php.docker.tar.gz
+    - gsutil signurl -d 7d  ~/gcloud-arti-signed-service-key.json gs://${GCLOUD_ARTIFACTS_BUCKET}/${CI_COMMIT_REF_SLUG}.apache.docker.tar.gz
+
+

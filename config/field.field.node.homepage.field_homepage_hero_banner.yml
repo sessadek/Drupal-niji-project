@@ -1,0 +1,55 @@
+uuid: dc332039-693c-4ca2-835c-1122f3c2bfdc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_homepage_hero_banner
+    - node.type.homepage
+    - paragraphs.paragraphs_type.homepage_hero_banner
+  module:
+    - entity_reference_revisions
+id: node.homepage.field_homepage_hero_banner
+field_name: field_homepage_hero_banner
+entity_type: node
+bundle: homepage
+label: "Header - Page d'accueil"
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      homepage_hero_banner: homepage_hero_banner
+    negate: 0
+    target_bundles_drag_drop:
+      cta:
+        weight: 8
+        enabled: false
+      download:
+        weight: 9
+        enabled: false
+      downloads:
+        weight: 10
+        enabled: false
+      homepage_hero_banner:
+        weight: 13
+        enabled: true
+      image_text_column:
+        weight: 11
+        enabled: false
+      media_text:
+        weight: 12
+        enabled: false
+      required_cta:
+        weight: 16
+        enabled: false
+      text:
+        weight: 13
+        enabled: false
+      text_content:
+        weight: 14
+        enabled: false
+field_type: entity_reference_revisions

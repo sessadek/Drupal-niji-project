@@ -1,0 +1,10 @@
+uuid: 0db848f2-0fb3-4521-a4cd-f683cbbba810
+langcode: en
+status: true
+dependencies: {  }
+id: download
+label: Téléchargement
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

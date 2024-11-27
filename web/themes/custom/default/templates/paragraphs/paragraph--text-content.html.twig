@@ -1,0 +1,12 @@
+{% block content %}
+  <div class="ContentBlock-content">
+    {% if content.field_text | render %}
+      {{ content.field_text }}
+    {% endif %}
+    {% if content.field_ctas | render %}
+      <div class="ContentBlock-actions">
+        {{ content.field_ctas }}
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}

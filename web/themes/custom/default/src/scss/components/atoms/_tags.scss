@@ -1,0 +1,25 @@
+/* ==========================================================================
+   Tag Labels
+   ========================================================================== */
+
+:root {
+  --tag-min-height: #{px-to-rem(26)};
+  --tag-text-color: #{$ds-colors-brand-secondary-1000};
+  --tag-text-color--hover: #{$ds-colors-grayscale-white};
+  --tag-text-color--active: #{$ds-colors-grayscale-white};
+  --tag-bg-color: #{$ds-colors-brand-tertiary-500};
+  --tag-bg-color--hover: #{$ds-colors-brand-tertiary-600};
+  --tag-bg-color--active: #{$ds-colors-brand-tertiary-700};
+}
+
+.Tag {
+  @extend %Tag;
+
+  &s {
+    @extend %Tags;
+  }
+
+  &Wrapper {
+    @extend %TagWrapper;
+  }
+}

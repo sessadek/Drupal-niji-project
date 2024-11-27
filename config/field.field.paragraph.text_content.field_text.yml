@@ -1,0 +1,24 @@
+uuid: dfe544fd-b883-4bdf-b570-eb52e19f41f3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text
+    - filter.format.classic
+    - paragraphs.paragraphs_type.text_content
+  module:
+    - text
+id: paragraph.text_content.field_text
+field_name: field_text
+entity_type: paragraph
+bundle: text_content
+label: Texte
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - classic
+field_type: text_long

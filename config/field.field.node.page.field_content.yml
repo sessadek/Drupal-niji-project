@@ -1,0 +1,71 @@
+uuid: 2cdc683c-918b-41f5-a66c-cbc468b6db2e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_content
+    - node.type.page
+    - paragraphs.paragraphs_type.download
+    - paragraphs.paragraphs_type.image_text_column
+    - paragraphs.paragraphs_type.media_text
+    - paragraphs.paragraphs_type.reinsurance
+    - paragraphs.paragraphs_type.text
+    - paragraphs.paragraphs_type.tips_and_tricks
+  module:
+    - entity_reference_revisions
+id: node.page.field_content
+field_name: field_content
+entity_type: node
+bundle: page
+label: Contenu
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      text: text
+      media_text: media_text
+      download: download
+      image_text_column: image_text_column
+      reinsurance: reinsurance
+      tips_and_tricks: tips_and_tricks
+    negate: 0
+    target_bundles_drag_drop:
+      cta:
+        weight: -12
+        enabled: false
+      doc:
+        weight: 13
+        enabled: false
+      download:
+        weight: -13
+        enabled: true
+      image_text_column:
+        weight: -9
+        enabled: true
+      media_text:
+        weight: -14
+        enabled: true
+      reinsurance:
+        weight: 15
+        enabled: true
+      reinsurance_item:
+        weight: 16
+        enabled: false
+      text:
+        weight: -15
+        enabled: true
+      text_content:
+        weight: -11
+        enabled: false
+      tips:
+        weight: 21
+        enabled: false
+      tips_and_tricks:
+        weight: 16
+        enabled: true
+field_type: entity_reference_revisions

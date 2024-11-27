@@ -1,0 +1,11 @@
+uuid: b051daff-b025-4acd-925d-89a9ce85b174
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.image_left
+label: 'Image à gauche'
+description: ''
+targetEntityType: paragraph
+cache: true

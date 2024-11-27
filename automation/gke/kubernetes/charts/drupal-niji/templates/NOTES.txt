@@ -1,0 +1,9 @@
+
+*******************************************************************
+*** PLEASE BE PATIENT: Drupal may take a few minutes to install ***
+*******************************************************************
+{{- if .Values.ingress.hostname }}
+
+You should be able to access your new Drupal installation through https://{{- .Values.ingress.hostname }}/
+
+{{- end }}

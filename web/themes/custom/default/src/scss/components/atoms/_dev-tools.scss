@@ -1,0 +1,60 @@
+/* ==========================================================================
+   DevTools
+   ========================================================================== */
+
+.DevTools {
+  --_text: '';
+  --_color: transparent;
+  --_color--50: transparent;
+  --_color--40: transparent;
+  --_color--20: transparent;
+
+  &.-wip {
+    --_text: '/!\\ Work in progress /!\\';
+    --_color: #{$ds-colors-ui-warning};
+    --_color--50: #{rgba($ds-colors-ui-warning, .5)};
+    --_color--40: #{rgba($ds-colors-ui-warning, .4)};
+    --_color--20: #{rgba($ds-colors-ui-warning, .2)};
+  }
+
+  &.-notUsed {
+    --_text: '/!\\ Not used yet /!\\';
+    --_color: #{$ds-colors-ui-error};
+    --_color--50: #{rgba($ds-colors-ui-error, .5)};
+    --_color--40: #{rgba($ds-colors-ui-error, .4)};
+    --_color--20: #{rgba($ds-colors-ui-error, .2)};
+  }
+
+  position: relative;
+  outline: $ds-border-width-small dashed var(--_color--50);
+
+  &::before,
+  &::after {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  &::before {
+    content: '';
+    inset: 0;
+    background: var(--_color--20);
+    transition: $ds-transition-speed-fast;
+  }
+
+  &::after {
+    @extend %TextStyle-caption;
+
+    content: var(--_text);
+    inset: 0 0 auto auto;
+    padding: $ds-spacings--xx-small $ds-spacings--small;
+    border: $ds-border-width-small dashed;
+    background: var(--_color--40);
+    color: var(--_color);
+  }
+
+  &:hover {
+    &::before {
+      opacity: 0;
+    }
+  }
+}

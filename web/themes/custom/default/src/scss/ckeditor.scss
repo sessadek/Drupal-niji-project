@@ -1,0 +1,19 @@
+@import "abstracts";
+@import "fonts";
+
+/* stylelint-disable-next-line selector-class-pattern */
+.ck-editor__editable {
+  @extend %EditorialWysiwyg;
+
+  a.Button {
+    @extend %Button;
+
+    &.-primary {
+      @extend %Button--primary;
+    }
+
+    &.-secondary {
+      @extend %Button--secondary;
+    }
+  }
+}

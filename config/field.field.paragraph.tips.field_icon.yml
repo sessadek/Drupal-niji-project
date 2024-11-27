@@ -1,0 +1,29 @@
+uuid: f75962df-fe99-4cf2-87be-c8c67c1b6f94
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_icon
+    - media.type.icon
+    - paragraphs.paragraphs_type.tips
+id: paragraph.tips.field_icon
+field_name: field_icon
+entity_type: paragraph
+bundle: tips
+label: 'Icon astuce'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      icon: icon
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

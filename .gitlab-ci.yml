@@ -1,0 +1,559 @@
+stages:
+  - build-dev
+  - quality-gates
+  - build
+  - package
+  - upload-archives
+  - check-images
+  - deploy
+  - install-update
+  - undeploy
+  - share-archives
+
+variables:
+  CI_DEBUG_TRACE: "false"
+  APACHE_VERSION: "2.4"
+  PHP_VERSION: "8.3"
+  NODE_VERSION: "22"
+  MARIADB_VERSION: "10.7"
+  REDIS_VERSION: "7"
+  VARNISH_VERSION: "4.1"
+  PHPMYADMIN_VERSION: "5.2"
+  MAILHOG_VERSION: "v1.0.1"
+  ARTEFACT_REGISTRY: "europe-west9-docker.pkg.dev"
+  VERSION: "${CI_COMMIT_REF_SLUG}"
+  DEPLOYMENT_FOLDER: "/etc/project/app-drupal-docker/${VERSION}"
+  DOCKER_COMPOSE_PROJECT: "app-drupal-docker_${VERSION}"
+
+###################################################################################################
+# QUALITY STEPS
+###################################################################################################
+
+#Define the composer cache available for all pipelines, all jobs and all branches.
+cache:
+  key: composer-cache
+  paths:
+    - .composer-cache/
+
+#Build dev requirements for quality gates execution.
+build-for-quality-gates:
+  image: composer:2.5.8
+  stage: build-dev
+  script:
+    - COMPOSER_CACHE_DIR=.composer-cache composer install --no-interaction --ignore-platform-reqs
+  artifacts:
+    paths:
+      - ./vendor
+      - ./web/core
+      - ./web/modules/contrib
+      - ./web/themes/contrib
+      - ./web/profiles/contrib
+    expire_in: 30 mins
+    when: always
+  tags:
+    - forge-vm-docker
+
+#PHPStan
+static-analysis-phpstan:
+  image: php:${PHP_VERSION}-cli
+  stage: quality-gates
+  script: "vendor/bin/phpstan analyse --memory-limit=-1 2>&1 | tee reportPhpStan.txt"
+  artifacts:
+    paths:
+      - ./reportPhpStan.txt
+    expire_in: 1 week
+    when: always
+  cache: {}
+  tags:
+    - forge-vm-docker
+
+#PHPCS
+static-analysis-phpcs:
+  image: php:${PHP_VERSION}-cli
+  stage: quality-gates
+  script: "vendor/bin/phpcs --standard=phpcs.xml.dist 2>&1 | tee reportPhpCS.txt"
+  artifacts:
+    paths:
+      - ./reportPhpCS.txt
+    expire_in: 1 week
+    when: always
+  cache: {}
+  tags:
+    - forge-vm-docker
+
+#PHPMD
+static-analysis-phpmd:
+  image: php:${PHP_VERSION}-cli
+  stage: quality-gates
+  script: "vendor/bin/phpmd ./web/modules/custom,./web/themes/custom,./web/profiles/custom text phpmd.rules.xml.dist 2>&1 | tee reportPhpMD.html"
+  artifacts:
+    paths:
+      - ./reportPhpMD.html
+    expire_in: 1 week
+    when: always
+  cache: {}
+  tags:
+    - forge-vm-docker
+
+#PHPCPD
+static-analysis-phpcpd:
+  image: php:${PHP_VERSION}-cli
+  stage: quality-gates
+  script: "vendor/bin/phpcpd ./web/modules/custom ./web/themes/custom ./web/profiles/custom 2>&1 | tee reportPhpCPD.txt || true"
+  artifacts:
+    paths:
+      - ./reportPhpCPD.txt
+    expire_in: 1 week
+    when: always
+  cache: {}
+  tags:
+    - forge-vm-docker
+
+check-code-vulnerabilities:
+  image:
+    name: aquasec/trivy:0.44.1
+    entrypoint: [""]
+  stage: quality-gates
+  allow_failure: true
+  cache: {}
+  script:
+    - trivy --exit-code 1 fs --scanners vuln . 2>&1 | tee reportTrivy.txt
+  artifacts:
+    paths:
+      - ./reportTrivy.txt
+    expire_in: 1 week
+    when: always
+  tags:
+    - forge-vm-docker
+
+#Sonarqube
+sonarqube:
+  image: sonarsource/sonar-scanner-cli:5.0.1
+  stage: quality-gates
+  retry: 1
+  dependencies: []
+  variables:
+    BROWSERSLIST_IGNORE_OLD_DATA: "true"
+  script:
+    - |
+      sonar-scanner -X -Dsonar.host.url="https://sonarqube.niji.fr" \
+      -Dsonar.projectKey=${FORGE_VM_SONAR_PROJECT_KEY} \
+      -Dsonar.login=${FORGE_VM_SONAR_TOKEN} \
+      -Dsonar.sources="./web/modules/custom,./web/themes/custom,./web/profiles/custom" \
+      -Dsonar.analysis.mode="publish" \
+      -Dsonar.language="php"
+  cache: {}
+  allow_failure: true
+  tags:
+    - forge-vm-docker
+
+###################################################################################################
+# BUILD
+###################################################################################################
+
+#Template injected on steps that needs credentials to connect to Google Cloud Builder and other Gcloud services
+.gcloudAuth: &gcloudAuth
+  - echo ${FORGE_VM_GITLAB_RUNNER_SA_KEY} | base64 -d -i > /tmp/gcloud-gitlab-runner-service-key.json
+  - gcloud auth activate-service-account gitlab-runner@${FORGE_VM_GCLOUD_PROJECT_ID}.iam.gserviceaccount.com --key-file /tmp/gcloud-gitlab-runner-service-key.json
+  - gcloud config set project ${FORGE_VM_GCLOUD_PROJECT_ID}
+
+.gcloudAuth-kaniko: &gcloudAuth-kaniko
+  - export GOOGLE_APPLICATION_CREDENTIALS=/kaniko/config.json
+  - echo ${FORGE_VM_GITLAB_RUNNER_SA_KEY} | base64 -d -i > /kaniko/config.json
+
+.common-build-branches: &common-build-branches
+  - master
+  - develop
+  - /^release.*/
+  - /^feature.*/
+  - /^fix.*/
+  - tags
+
+#Create application package
+build-composer:
+  image: composer:2.5.8
+  stage: build
+  only: *common-build-branches
+  dependencies: []
+  script:
+    - COMPOSER_CACHE_DIR=.composer-cache ./automation/bin/build.sh
+  artifacts:
+    paths:
+      - ./
+    exclude:
+      - web/themes/**/*
+      - .git
+      - .git/**/*
+    expire_in: 30 mins
+    when: on_success
+  tags:
+    - forge-vm-docker
+
+#Create application package
+build-theme:
+  image: node:${NODE_VERSION}
+  stage: build
+  only: *common-build-branches
+  cache: {}
+  script:
+    - cd web/themes/custom/default
+    - pwd
+    - npm install
+    - npm run build
+    - npm install --omit=dev
+  dependencies: []
+  artifacts:
+    paths:
+      - ./web/themes/
+    expire_in: 30 mins
+    when: on_success
+  tags:
+    - forge-vm-docker
+
+###################################################################################################
+# PACKAGE
+###################################################################################################
+
+archive-artifact:
+  image: google/cloud-sdk:alpine
+  stage: package
+  only: *common-build-branches
+  before_script: *gcloudAuth
+  cache: {}
+  dependencies:
+    - build-composer
+    - build-theme
+  script:
+    - apk add --no-cache tar
+    - ./automation/bin/create-artifact.sh
+  artifacts:
+    paths:
+      - artifact.tar.gz
+    expire_in: 30 mins
+    when: on_success
+  tags:
+    - forge-vm-docker
+
+build-php-image:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  stage: package
+  cache: {}
+  needs:
+    - archive-artifact
+  only: *common-build-branches
+  before_script: *gcloudAuth-kaniko
+  script:
+    - |
+      /kaniko/executor \
+      --context ${CI_PROJECT_DIR} \
+      --build-arg PHP_VERSION=${PHP_VERSION} \
+      --dockerfile ${CI_PROJECT_DIR}/automation/docker/DockerfilePHP \
+      --destination ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-php:${CI_COMMIT_REF_SLUG} \
+      --destination ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-php:${CI_COMMIT_REF_SLUG}-latest
+  tags:
+    - forge-vm-docker
+
+build-apache-image:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  stage: package
+  cache: {}
+  needs:
+    - archive-artifact
+  only: *common-build-branches
+  before_script: *gcloudAuth-kaniko
+  script:
+    - |
+      /kaniko/executor \
+      --context ${CI_PROJECT_DIR} \
+      --build-arg APACHE_VERSION=${APACHE_VERSION} \
+      --dockerfile ${CI_PROJECT_DIR}/automation/docker/DockerfileApache \
+      --destination ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-apache:${CI_COMMIT_REF_SLUG} \
+      --destination ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-apache:${CI_COMMIT_REF_SLUG}-latest
+  tags:
+    - forge-vm-docker
+
+archive-images:
+  image: eu.gcr.io/public-docker-image/niji/gsutil-ssl:latest
+  stage: package
+  only: *common-build-branches
+  before_script: *gcloudAuth
+  needs:
+    - build-php-image
+    - build-apache-image
+  cache: {}
+  script:
+    - echo ${FORGE_VM_GITLAB_RUNNER_SA_KEY} | docker login -u _json_key_base64 --password-stdin https://${ARTEFACT_REGISTRY}
+    - docker pull ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-php:${CI_COMMIT_REF_SLUG}
+    - docker pull ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-apache:${CI_COMMIT_REF_SLUG}
+    - docker save -o ${CI_COMMIT_REF_SLUG}.drupal-php-docker.tar.gz ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-php:${CI_COMMIT_REF_SLUG}
+    - docker save -o ${CI_COMMIT_REF_SLUG}.drupal-apache-docker.tar.gz ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-apache:${CI_COMMIT_REF_SLUG}
+  artifacts:
+    paths:
+      - ${CI_COMMIT_REF_SLUG}.drupal-php-docker.tar.gz
+      - ${CI_COMMIT_REF_SLUG}.drupal-apache-docker.tar.gz
+    expire_in: 30 mins
+    when: on_success
+  tags:
+    - forge-vm-shell
+
+###################################################################################################
+# UPLOAD ARCHIVES
+###################################################################################################
+
+upload-artifact-archive:
+  image: google/cloud-sdk:alpine
+  stage: upload-archives
+  only: *common-build-branches
+  before_script: *gcloudAuth
+  dependencies:
+    - archive-artifact
+  cache: {}
+  script:
+    - gsutil cp artifact.tar.gz gs://${FORGE_VM_GCLOUD_ARTIFACTS_BUCKET}/app-drupal-docker/${CI_COMMIT_REF_SLUG}/artifact.tar.gz
+    - gsutil cp artifact.tar.gz gs://${FORGE_VM_GCLOUD_ARTIFACTS_BUCKET}/app-drupal-docker/${CI_COMMIT_REF_SLUG}/artifact-latest.tar.gz
+  tags:
+    - forge-vm-docker
+
+upload-image-archives:
+  image: eu.gcr.io/public-docker-image/niji/gsutil-ssl:latest
+  stage: upload-archives
+  only: *common-build-branches
+  before_script: *gcloudAuth
+  dependencies:
+    - archive-images
+  cache: {}
+  script:
+    - gsutil cp ${CI_COMMIT_REF_SLUG}.drupal-php-docker.tar.gz gs://${FORGE_VM_GCLOUD_ARTIFACTS_BUCKET}/app-drupal-docker/${CI_COMMIT_REF_SLUG}/drupal-php-docker.tar.gz
+    - gsutil cp ${CI_COMMIT_REF_SLUG}.drupal-apache-docker.tar.gz gs://${FORGE_VM_GCLOUD_ARTIFACTS_BUCKET}/app-drupal-docker/${CI_COMMIT_REF_SLUG}/drupal-apache-docker.tar.gz
+  tags:
+    - forge-vm-shell
+
+################################################################################
+# CHECK IMAGES
+################################################################################
+
+check-php-image:
+  image:
+    name: aquasec/trivy:0.44.1
+    entrypoint: [""]
+  stage: check-images
+  only: *common-build-branches
+  allow_failure: true
+  dependencies: []
+  cache: {}
+  before_script:
+    - export GOOGLE_APPLICATION_CREDENTIALS=/tmp/config.json
+    - echo ${FORGE_VM_GITLAB_RUNNER_SA_KEY} | base64 -d -i > /tmp/config.json
+  script:
+    - trivy --cache-dir .cache --severity HIGH,CRITICAL --exit-code 1 --format table image ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-php:${CI_COMMIT_REF_SLUG}-latest
+  tags:
+    - forge-vm-docker
+
+check-apache-image:
+  image:
+    name: aquasec/trivy:0.44.1
+    entrypoint: [""]
+  stage: check-images
+  only: *common-build-branches
+  allow_failure: true
+  dependencies: []
+  cache: {}
+  before_script:
+    - export GOOGLE_APPLICATION_CREDENTIALS=/tmp/config.json
+    - echo ${FORGE_VM_GITLAB_RUNNER_SA_KEY} | base64 -d -i > /tmp/config.json
+  script:
+    - trivy --cache-dir .cache --severity HIGH,CRITICAL --exit-code 1 --format table image ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-apache:${CI_COMMIT_REF_SLUG}-latest
+  tags:
+    - forge-vm-docker
+
+################################################################################
+# DEPLOY
+################################################################################
+
+.deploy: &deploy
+  stage: deploy
+  when: manual
+  variables: &variables
+    APP_DOMAIN: ${FORGE_VM_BASE_DOMAIN}
+    APP_HASH_SALT: "e-CQHqybWcnrbIQ_p1ZmsdMz32Xf7wiJJUJw-NXpwK5Rgcs5KvsOoN90hASE-iotVub33l_nWQ"
+    FRONT_NETWORK: "traefik-global-proxy"
+    DRUPAL_SERVICE_DNS: drupal-${VERSION}.${FORGE_VM_BASE_DOMAIN}  # use a short prefix in order to not having a dns > 64 char
+    VARNISH_SERVICE_DNS: varnish-${VERSION}.${FORGE_VM_BASE_DOMAIN}  # use a short prefix in order to not having a dns > 64 char
+    PMA_SERVICE_DNS: pma-${VERSION}.${FORGE_VM_BASE_DOMAIN}  # use a short prefix in order to not having a dns > 64 char
+    MAILHOG_SERVICE_DNS: mailhog-${VERSION}.${FORGE_VM_BASE_DOMAIN}  # use a short prefix in order to not having a dns > 64 char
+    PHP_IMAGE: ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-php
+    APACHE_IMAGE: ${ARTEFACT_REGISTRY}/${FORGE_VM_GCLOUD_PROJECT_ID}/internal-project-repo/drupal-apache
+    TAG: ${CI_COMMIT_REF_SLUG}
+  dependencies: []
+  cache: {}
+  before_script:
+    - echo ${FORGE_VM_GITLAB_RUNNER_SA_KEY} | docker login -u _json_key_base64 --password-stdin https://${ARTEFACT_REGISTRY}
+  script: &script
+    - rm -rf ${DEPLOYMENT_FOLDER}
+    - mkdir -p ${DEPLOYMENT_FOLDER}
+    - echo APP_DOMAIN=${APP_DOMAIN}                 >> ${DEPLOYMENT_FOLDER}/.env
+    - echo APP_HASH_SALT=${APP_HASH_SALT}           >> ${DEPLOYMENT_FOLDER}/.env
+    - echo FRONT_NETWORK=${FRONT_NETWORK}           >> ${DEPLOYMENT_FOLDER}/.env
+    - echo MARIADB_VERSION=${MARIADB_VERSION}       >> ${DEPLOYMENT_FOLDER}/.env
+    - echo REDIS_VERSION=${REDIS_VERSION}           >> ${DEPLOYMENT_FOLDER}/.env
+    - echo VARNISH_VERSION=${VARNISH_VERSION}       >> ${DEPLOYMENT_FOLDER}/.env
+    - echo APACHE_VERSION=${APACHE_VERSION}         >> ${DEPLOYMENT_FOLDER}/.env
+    - echo PHPMYADMIN_VERSION=${PHPMYADMIN_VERSION} >> ${DEPLOYMENT_FOLDER}/.env
+    - echo PHP_VERSION=${PHP_VERSION}               >> ${DEPLOYMENT_FOLDER}/.env
+    - echo MAILHOG_VERSION=${MAILHOG_VERSION}       >> ${DEPLOYMENT_FOLDER}/.env
+    - echo DRUPAL_SERVICE_DNS=${DRUPAL_SERVICE_DNS}   >> ${DEPLOYMENT_FOLDER}/.env
+    - echo VARNISH_SERVICE_DNS=${VARNISH_SERVICE_DNS} >> ${DEPLOYMENT_FOLDER}/.env
+    - echo PMA_SERVICE_DNS=${PMA_SERVICE_DNS}         >> ${DEPLOYMENT_FOLDER}/.env
+    - echo MAILHOG_SERVICE_DNS=${MAILHOG_SERVICE_DNS} >> ${DEPLOYMENT_FOLDER}/.env
+    - echo PHP_IMAGE=${PHP_IMAGE}       >> ${DEPLOYMENT_FOLDER}/.env
+    - echo APACHE_IMAGE=${APACHE_IMAGE} >> ${DEPLOYMENT_FOLDER}/.env
+    - echo TAG=${TAG}                   >> ${DEPLOYMENT_FOLDER}/.env
+    - echo DOCKER_COMPOSE_PROJECT=${DOCKER_COMPOSE_PROJECT} >> ${DEPLOYMENT_FOLDER}/.env
+    - cp automation/gce/docker-compose.yml ${DEPLOYMENT_FOLDER}/
+    - docker compose -p ${DOCKER_COMPOSE_PROJECT} -f ${DEPLOYMENT_FOLDER}/docker-compose.yml pull
+    - docker compose -p ${DOCKER_COMPOSE_PROJECT} -f ${DEPLOYMENT_FOLDER}/docker-compose.yml up -d
+  tags:
+    - forge-vm-shell
+
+deploy-feature:
+  <<: *deploy
+  script:
+    - docker compose -p ${DOCKER_COMPOSE_PROJECT} down --remove-orphans || true
+    - *script
+  only:
+    - /^feature.*/
+
+deploy-integ:
+  <<: *deploy
+  variables:
+    <<: *variables
+    VERSION: "integ"
+  only:
+    - develop
+
+deploy-rec:
+  <<: *deploy
+  variables:
+      <<: *variables
+      VERSION: "rec"
+  only:
+    - /^release.*/
+    - tags
+
+.install-update: &install-update
+  stage: install-update
+  when: manual
+  dependencies: []
+  cache: {}
+  tags:
+    - forge-vm-shell
+  only:
+    - develop
+    - /^feature.*/
+    - /^release.*/
+    - tags
+
+.install: &install
+  <<: *install-update
+  script:
+    - docker compose -p ${DOCKER_COMPOSE_PROJECT} exec php /var/www/html/automation/bin/install.sh
+    - docker compose -p ${DOCKER_COMPOSE_PROJECT} exec php /var/www/html/automation/bin/reset_password.sh
+
+.update: &update
+  <<: *install-update
+  script:
+    - docker compose -p ${DOCKER_COMPOSE_PROJECT} exec php /var/www/html/automation/bin/update.sh
+
+install-feature:
+  <<: *install
+  only:
+    - /^feature.*/
+
+update-feature:
+  <<: *update
+  only:
+    - /^feature.*/
+
+install-integ:
+  <<: *install
+  variables:
+    VERSION: "integ"
+  only:
+    - develop
+
+update-integ:
+  <<: *update
+  variables:
+    VERSION: "integ"
+  only:
+    - develop
+
+install-rec:
+  <<: *install
+  variables:
+    VERSION: "rec"
+  only:
+    - /^release.*/
+    - tags
+
+update-rec:
+  <<: *update
+  variables:
+    VERSION: "rec"
+  only:
+    - /^release.*/
+    - tags
+
+undeploy:
+  stage: undeploy
+  when: manual
+  dependencies: []
+  cache: {}
+  script:
+    - docker compose -p ${DOCKER_COMPOSE_PROJECT} down --remove-orphans -v || true
+    - rm -rf ${DEPLOYMENT_FOLDER}
+  only:
+    - /^feature.*/
+  tags:
+    - forge-vm-shell
+
+################################################################################
+# SHARE ARCHIVES
+################################################################################
+
+.common-sign-branches: &common-sign-branches
+  - /^release.*/
+  - tags
+
+share-artifact-archive:
+  image: eu.gcr.io/public-docker-image/niji/gsutil-ssl:latest
+  stage: share-archives
+  when: manual
+  dependencies: []
+  cache: {}
+  only: *common-sign-branches
+  before_script: *gcloudAuth
+  script:
+    - echo ${FORGE_VM_ARTIFACT_SIGNED_SERVICE_KEYY} | base64 -d > /tmp/gcloud-arti-signed-service-key.json
+    - gsutil signurl -d 7d  /tmp/gcloud-arti-signed-service-key.json gs://${FORGE_VM_GCLOUD_ARTIFACTS_BUCKET}/app-drupal-docker/${CI_COMMIT_REF_SLUG}/artifact.tar.gz
+  tags:
+    - forge-vm-shell
+
+share-image-archives:
+  image: eu.gcr.io/public-docker-image/niji/gsutil-ssl:latest
+  stage: share-archives
+  when: manual
+  dependencies: []
+  cache: {}
+  only: *common-sign-branches
+  before_script: *gcloudAuth
+  script:
+    - echo ${FORGE_VM_ARTIFACT_SIGNED_SERVICE_KEYY} | base64 -d > /tmp/gcloud-arti-signed-service-key.json
+    - gsutil signurl -d 7d  /tmp/gcloud-arti-signed-service-key.json gs://${FORGE_VM_GCLOUD_ARTIFACTS_BUCKET}/app-drupal-docker/${CI_COMMIT_REF_SLUG}/drupal-php-docker.tar.gz
+    - gsutil signurl -d 7d  /tmp/gcloud-arti-signed-service-key.json gs://${FORGE_VM_GCLOUD_ARTIFACTS_BUCKET}/app-drupal-docker/${CI_COMMIT_REF_SLUG}/drupal-apache-docker.tar.gz
+  tags:
+    - forge-vm-shell

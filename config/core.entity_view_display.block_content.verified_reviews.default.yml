@@ -1,0 +1,21 @@
+uuid: f86e2e9f-3bf4-4226-88d1-a0ee096de705
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.verified_reviews
+    - field.field.block_content.verified_reviews.field_title
+id: block_content.verified_reviews.default
+targetEntityType: block_content
+bundle: verified_reviews
+mode: default
+content:
+  field_title:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

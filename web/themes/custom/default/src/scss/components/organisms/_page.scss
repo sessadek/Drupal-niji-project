@@ -1,0 +1,132 @@
+/* ==========================================================================
+   Page
+   ========================================================================== */
+.Page {
+  &-wrapper {
+    @extend %PageWrapper;
+
+    position: relative;
+  }
+
+  &-inner {
+    @extend %PageInner;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $ds-spacings--large $ds-spacings--standard;
+
+    @include breakpoint('desktop') {
+      grid-template-columns: repeat(12, 1fr);
+    }
+  }
+
+  &-top {
+    @include breakpoint('desktop') {
+      grid-column: 3/11;
+    }
+  }
+
+  &-title {
+    @extend %TextStyle-heading1;
+
+    margin-block-end: $ds-spacings--x-large;
+    color: $ds-text-color-primary;
+
+    .Page-content &:last-child {
+      margin-block-end: 0;
+    }
+  }
+
+  &-subtitle {
+    @extend %TextStyle-heading5;
+
+    margin-block-end: $ds-spacings--small;
+  }
+
+  &-intro {
+    @extend %PageInner;
+
+    .EditorialWysiwyg {
+      p {
+        @extend %EditorialWysiwyg--important;
+
+        &:first-child {
+          margin-block-start: 0;
+        }
+
+        &:last-child {
+          margin-block-end: 0;
+        }
+      }
+    }
+  }
+
+  &-content {
+    margin-block: $ds-spacings--large;
+
+    @include breakpoint('desktop') {
+      grid-column: 3/11;
+    }
+  }
+
+  &-picture {
+    margin-block: $ds-spacings--large;
+
+    @include breakpoint('desktop') {
+      grid-column: 2/12;
+    }
+
+    img {
+      @include ImageFit;
+    }
+  }
+
+  &-subContent {
+    margin-block-start: $ds-spacings--standard;
+
+    @include breakpoint('desktop') {
+      grid-column: 1/13;
+      margin-block-start: $ds-spacings--large;
+    }
+  }
+
+  &-sidebar {
+    @include breakpoint('desktop') {
+      grid-column: 1/4;
+
+      & + .Page-content {
+        grid-column: 4/13;
+      }
+    }
+
+    @include breakpoint('desktop-large') {
+      & + .Page-content {
+        grid-column: 5/13;
+      }
+    }
+
+    .Page {
+      &-picture {
+        margin-block-end: $ds-spacings--standard;
+
+        img {
+          aspect-ratio: 1;
+        }
+      }
+    }
+  }
+
+  &-actions {
+    margin-block-start: $ds-spacings--x-large;
+  }
+
+  &-infos {
+    display: grid;
+    gap: $ds-spacings--medium;
+    color: $ds-text-color-primary;
+  }
+
+  &-label {
+    @extend %TextStyle-heading6;
+  }
+}

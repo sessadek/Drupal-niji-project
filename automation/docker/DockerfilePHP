@@ -1,0 +1,23 @@
+ARG PHP_VERSION
+
+FROM wodby/drupal-php:${PHP_VERSION}
+
+COPY ./artifact.tar.gz /tmp/artefact.tar.gz
+
+USER root
+
+RUN \
+  tar zxfv /tmp/artefact.tar.gz -C /var/www/html > /dev/null && \
+  rm /tmp/artefact.tar.gz && \
+  chown -R wodby:wodby /var/www/html
+
+RUN chown -R wodby:www-data /var/www/html/web/sites/default/files
+RUN chmod -R ug=rwx,o=rx /var/www/html/web/sites/default/files
+
+RUN chmod ugo-w /var/www/html/web/sites/default/settings.local.php
+RUN chmod ugo-w /var/www/html/web/sites/default/settings.env.php
+RUN chmod ugo-w /var/www/html/web/sites/default/settings.php
+RUN chmod ugo-w /var/www/html/web/sites/default/services.yml
+RUN chmod ugo-w /var/www/html/web/sites/default
+
+USER wodby

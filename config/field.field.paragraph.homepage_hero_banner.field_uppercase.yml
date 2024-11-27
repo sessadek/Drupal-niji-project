@@ -1,0 +1,21 @@
+uuid: 5efb845b-967e-4159-ad46-f217a267b10c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_uppercase
+    - paragraphs.paragraphs_type.homepage_hero_banner
+id: paragraph.homepage_hero_banner.field_uppercase
+field_name: field_uppercase
+entity_type: paragraph
+bundle: homepage_hero_banner
+label: Majuscules
+description: "Bouton permettant l'affichage en majuscules ou minuscules des textes de niveau 1, 2 et 3.<br>\r\n(ON => Majuscules / OFF => Minuscules)"
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: Majuscules
+  off_label: Minuscules
+field_type: boolean

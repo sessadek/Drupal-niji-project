@@ -1,0 +1,12 @@
+{% set target = content.field_link['#items'].0.options.attributes.target %}
+{% set label = content.field_link['#items'].0.title %}
+{% set url = content.field_link['#items'].0.url %}
+{% set ctaClasses = [] %}
+{% block content %}
+  <a{{ attributes}} href="{{ url }}">
+    {% if target %} target="{{ target }}"{% endif %}
+    <span>
+      {{ label }}
+    </span>
+  </a>
+{% endblock content %}

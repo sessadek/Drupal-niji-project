@@ -1,0 +1,143 @@
+/* ==========================================================================
+   ToggleAccordions
+   ========================================================================== */
+
+:root {
+  --toggle-accordion-bg: transparent;
+  --toggle-accordion-trigger-padding-inline: #{$ds-spacings--medium};
+  --toggle-accordion-trigger-padding-block: #{$ds-spacings--medium};
+  --toggle-accordion-content-padding-block: #{$ds-spacings--semi} #{$ds-spacings--medium};
+  --toggle-accordion-content-padding-inline: #{$ds-spacings--medium};
+  --toggle-accordion-content-color: #{$ds-colors-grayscale-black};
+}
+
+.ToggleAccordion {
+  border-block-end: solid $ds-border-width-small $ds-border-color-dark;
+  background: var(--toggle-accordion-bg);
+
+  &-trigger {
+    @extend %TextStyle-heading5;
+
+    --_trigger-more-icon-url: url('../images/icons/more.svg');
+    --_trigger-more-icon-size: .75rem;
+    --_trigger-more-size: 3.5rem;
+    --_trigger-more-color: #{$ds-colors-grayscale-white};
+    --_trigger-more-bg-color: #{$ds-colors-brand-primary};
+
+    display: grid;
+    grid-template-columns: auto var(--_trigger-more-size);
+    gap: $ds-spacings--standard;
+    align-items: center;
+    width: 100%;
+    padding-block: var(--toggle-accordion-trigger-padding-block);
+    padding-inline: var(--toggle-accordion-trigger-padding-inline);
+    text-align: left; // hack button alignment
+    transition: color $ds-transition-speed-fast;
+
+    &::before,
+    &::after {
+      content: '';
+      grid-row: 1/2;
+      grid-column: 2/3;
+      width: var(--_trigger-more-size);
+      aspect-ratio: 1;
+      border-radius: $ds-radius-circle;
+      transition: inherit;
+      transition-property: background-color;
+    }
+
+    &::before {
+      border: solid $ds-border-color-primary $ds-border-width-small;
+      background: var(--_trigger-more-bg-color);
+    }
+
+    &::after {
+      content: '';
+      background-color: var(--_trigger-more-color);
+      mask-image: var(--_trigger-more-icon-url);
+      mask-position: center;
+      mask-repeat: no-repeat;
+      mask-size: var(--_trigger-more-icon-size);
+    }
+
+    &[aria-expanded="true"] {
+      --_trigger-more-color: #{$ds-colors-brand-primary};
+      --_trigger-more-bg-color: #{$ds-colors-grayscale-white};
+      --_trigger-more-icon-url: url('../images/icons/less.svg');
+      --_trigger-more-icon-size: auto;
+    }
+
+    &:hover {
+      color: var(--link-color);
+    }
+  }
+
+  &-label {
+    display: flex;
+    gap: $ds-spacings--standard;
+    align-items: center;
+
+    &::before {
+      content: '';
+      width: 1rem;
+      aspect-ratio: 1;
+      border: solid currentColor $ds-border-width-small;
+      border-radius: $ds-radius-circle;
+    }
+  }
+
+  &-content {
+    padding-block: var(--toggle-accordion-content-padding-block);
+    padding-inline: var(--toggle-accordion-content-padding-inline);
+  }
+}
+
+@keyframes toggle-accordion {
+  0% {
+    max-height: 0;
+  }
+
+  100% {
+    max-height: var(--accordion-panel-height, 100vh);
+  }
+}
+
+// js toggle animation
+/* stylelint-disable-next-line selector-class-pattern */
+.js-accordion {
+  position: relative;
+
+  &-group {
+    &[data-animated="true"] {
+      --js-accordion-panel-speed: #{$ds-transition-speed-standard};
+    }
+  }
+
+  &-panel {
+    /* stylelint-disable-next-line selector-class-pattern */
+    &[data-force-visible="tablet"] {
+      @include breakpoint('tablet') {
+        display: block;
+        animation: none !important;
+      }
+    }
+  }
+
+  > [aria-labelledby] {
+    &.-temporaryHidden {
+      position: absolute;
+      inset: 0 0 auto;
+      opacity: 0;
+    }
+
+    &.-isOpening,
+    &.-isClosing {
+      overflow: hidden;
+      animation: toggle-accordion var(--js-accordion-panel-speed, 0s) forwards;
+    }
+
+    &.-isClosing {
+      animation-direction: reverse;
+    }
+  }
+}

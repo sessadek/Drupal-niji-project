@@ -1,0 +1,21 @@
+.ColumnList {
+  ul {
+    @include TextStyle-body2;
+
+    display: grid;
+    gap: $ds-spacings--semi $ds-spacings--medium;
+    overflow-y: auto;
+    max-height: 350px;
+    margin-inline-start: 0;
+    list-style: none;
+    line-height: 1.1;
+
+    @include breakpoint-between('mobile', 'desktop') {
+      font-size: $ds-font-size-300;
+    }
+
+    @include breakpoint('tablet') {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}

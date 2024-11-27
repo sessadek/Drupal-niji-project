@@ -1,0 +1,460 @@
+/* ==========================================================================
+   WebForm
+   ========================================================================== */
+$form-field-height: 3.5rem;
+$form-grid-column-gap: $ds-spacings--standard;
+$form-field-border-color--default: $ds-border-color-light;
+$form-field-border-color--focus: $ds-colors-grayscale-300;
+$form-field-border-color--error: $ds-colors-ui-error-500;
+$form-field-select-arrow-size: .75rem;
+
+:root {
+  --form-grid-row-gap: #{$ds-spacings--medium};
+  --form-grid-column-gap: #{$form-grid-column-gap};
+  --form-field-bg-color: #{$ds-colors-grayscale-white};
+  --form-field-border-color: #{$ds-border-color-light};
+  --form-field-outline-color: transparent;
+  --form-field-outline-width: 0; // no outline needed
+  --filter-picture-max-width-percent: 90%;
+  --filter-picture-max-width-px: #{px-to-rem(156)};
+  --filter-picture-inner-padding: #{$ds-spacings--x-small};
+
+  @include breakpoint('tablet') {
+    --form-grid-row-gap: #{$ds-spacings--large};
+  }
+}
+
+%FormDescription {
+  @extend %TextStyle-body3;
+}
+
+
+%FormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--form-grid-row-gap) var(--form-grid-column-gap);
+
+  > * {
+    grid-column: 1 / -1;
+  }
+}
+
+%FormGridCell {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--form-grid-row-gap) var(--form-grid-column-gap);
+}
+
+%FormField-label {
+  @extend %TextStyle-label;
+
+  color: var(--text-color-grey);
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.form-required::after {
+    content: "*";
+    margin-inline-start: $ds-spacings--xxx-small;
+  }
+}
+
+.StandardForm {
+  /* stylelint-disable selector-class-pattern */
+  &:is(form),
+  form {
+    @extend %FormGrid;
+
+    color: $ds-text-color-grey;
+  }
+
+  .form-wrapper {
+    @extend %FormGrid;
+  }
+
+  a {
+    @include LinkSimple;
+  }
+
+  .form-item, // use Drupal selector
+  .form-checkboxes {
+    position: relative;
+    grid-column: 1 / -1;
+  }
+
+  .form-item {
+    input,
+    select,
+    textarea {
+      border: solid $ds-border-width-small var(--form-field-border-color);
+      outline: solid var(--form-field-outline-width) var(--form-field-outline-color);
+      accent-color: var(--text-color-primary);
+
+      &:focus {
+        --form-field-border-color: #{$form-field-border-color--focus};
+        --form-field-outline-color: #{$form-field-border-color--focus};
+      }
+
+      .-formInvalid &:invalid {
+        --form-field-border-color: #{$form-field-border-color--error};
+        --form-field-outline-color: #{$form-field-border-color--error};
+      }
+    }
+
+    input:not(.form-checkbox, .form-radio),
+    select,
+    textarea {
+      @extend %TextStyle-body3;
+
+      display: block;
+      width: 100%;
+      min-height: px-to-rem(48);
+      padding: px-to-rem(14) $ds-spacings--standard;
+      border-radius: $ds-radius-none;
+      background: var(--form-field-bg-color);
+      line-height: 1.25;
+      color: inherit;
+    }
+
+    input {
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active { // chrome autofill bg hack
+        box-shadow: 0 0 0 var(--button-min-height) var(--form-field-bg-color) inset !important;
+      }
+    }
+
+    textarea {
+      padding-block-end: $ds-spacings--standard;
+    }
+
+    select {
+      padding-inline-end: $ds-spacings--large;
+      appearance: none;
+    }
+
+    .form-checkbox,
+    .form-radio {
+      margin-inline-end: $ds-spacings--small;
+      outline-width: $ds-border-width-medium;
+    }
+
+    &.js-form-type-select {
+      grid-template-columns: 1fr 3rem;
+
+      > * {
+        grid-column: 1 / -1;
+      }
+
+      .form-select,
+      &::after {
+        grid-row: 2 / 3;
+      }
+
+      &::after {
+        content: '';
+        grid-column: 2 / 3;
+        place-self: center end;
+        width: var(--button-icon-size);
+        aspect-ratio: 1;
+        margin-inline: 0 $ds-spacings--standard;
+        background-color: currentColor;
+        pointer-events: none;
+        transform: rotate(90deg);
+        mask-image: url('../images/icons/arrow.svg');
+        mask-position: center;
+        mask-repeat: no-repeat;
+        mask-size: .375rem;
+      }
+    }
+
+    .-formInvalid &:has(:invalid) {
+      > label {
+        color: $form-field-border-color--error;
+      }
+    }
+
+    .form-item--error-message {
+      @extend %TextStyle-body2;
+
+      order: 2;
+      color: inherit;
+    }
+
+    .-formInvalid & .text-count-wrapper.webform-counter-warning,
+    .form-item--error-message {
+      color: $form-field-border-color--error;
+    }
+
+    &:not(.js-form-type-checkbox, .js-form-type-radio) {
+      display: grid;
+      gap: $ds-spacings--small;
+
+      > label {
+        @extend %FormField-label;
+      }
+    }
+
+    &.form-disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    // address fields
+    &[class*='city'],
+    &[class*='state-province'],
+    &[class*='postal-code'],
+    &[class*='country'] {
+      grid-column: auto / span 1;
+    }
+
+    .iti {
+      display: block; // force width 100% for phone plugin
+
+      &__selected-flag {
+        &:focus-visible {
+          outline-color: $form-field-border-color--focus;
+        }
+      }
+
+      .form-tel {
+        padding-inline-start: 3.25rem;
+      }
+    }
+
+    &:is(fieldset) {
+      margin: 0;
+
+      &.webform-composite-visible-title {
+        > legend {
+          @extend %FormField-label;
+        }
+
+        &.radios--wrapper {
+          > legend {
+            position: relative;
+            translate: none;
+          }
+        }
+      }
+
+      .form-checkboxes,
+      > .fieldset-wrapper {
+        @extend %FormGrid;
+      }
+
+      .form-checkboxes {
+        gap: 0;
+      }
+
+      &.-inline {
+        .form-checkboxes {
+          display: flex;
+          flex-wrap: wrap;
+          column-gap: $ds-spacings--semi;
+        }
+      }
+    }
+
+    &.form-item-pass,
+    &.password-parent,
+    &.confirm-parent {
+      grid-template-columns: 1fr 3rem;
+
+      > * {
+        grid-column: 1 / -1;
+      }
+
+      .form-text,
+      button.shwpd {
+        grid-row: 2 / 3;
+      }
+
+      button.shwpd {
+        grid-column: 2 / 3;
+        place-self: center end;
+        margin-inline: 0 $ds-spacings--standard;
+      }
+    }
+
+    .password-strength {
+      --_color: #{$ds-colors-ui-error};
+      --_bg-color: #{$ds-colors-ui-error-200};
+
+      &__meter {
+        background-color: var(--_bg-color);
+      }
+
+      &__indicator {
+        background-color: var(--_color);
+      }
+
+      &__title {
+        @extend %FormDescription;
+      }
+
+      &__text {
+        font-weight: 700;
+        color: var(--_color);
+      }
+
+      &:has(.is-weak) {
+        --_color: #{$ds-colors-ui-error};
+        --_bg-color: #{$ds-colors-ui-error-300};
+      }
+
+      &:has(.is-fair) {
+        --_color: #{$ds-colors-ui-warning};
+        --_bg-color: #{$ds-colors-ui-warning-200};
+      }
+
+      &:has(.is-good) {
+        --_color: #{$ds-colors-ui-info};
+        --_bg-color: #{$ds-colors-ui-info-200};
+      }
+
+      &:has(.is-strong) {
+        --_color: #{$ds-colors-ui-success};
+        --_bg-color: #{$ds-colors-ui-success-200};
+      }
+    }
+
+    .password-confirm-message {
+      @extend %FormDescription;
+
+      span {
+        font-weight: 700;
+      }
+
+      .error {
+        color: $ds-colors-ui-error;
+      }
+
+      .ok {
+        color: $ds-colors-ui-success;
+      }
+    }
+
+    .password-suggestions {
+      @extend %FormDescription;
+    }
+  }
+
+  .description {
+    @extend %FormDescription;
+  }
+
+  .form-group {
+    &.-noLegend {
+      fieldset {
+        > legend {
+          display: none;
+        }
+      }
+    }
+
+    &.-twoCols,
+    &.-pictureCheckboxes {
+      .form-item,
+      fieldset {
+        .form-item {
+          grid-column: auto / span 1;
+        }
+      }
+    }
+
+    &.-pictureCheckboxes {
+      .form-checkboxes {
+        gap: $ds-spacings--small;
+      }
+    }
+  }
+
+  fieldset.captcha {
+    .captcha__title {
+      @extend %FormField-label;
+
+      position: static;
+      translate: 0 0;
+    }
+
+    // default captcha
+    .form-item {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: center;
+
+      label {
+        @extend %TextStyle-body2;
+
+        position: static;
+        color: inherit;
+        translate: 0 0;
+      }
+
+      input[type="text"] {
+        width: auto;
+        padding-block: $ds-spacings--small;
+      }
+
+      .description {
+        flex: 0 0 100%;
+      }
+    }
+
+    // recaptcha
+    .g-recaptcha {
+      margin-block: $ds-spacings--x-small;
+
+      > div,
+      iframe {
+        width: min(100%, 304px) !important;
+        max-width: 100%;
+      }
+    }
+  }
+
+  .form-actions {
+    display: grid;
+    gap: $ds-spacings--semi;
+    margin-block-start: $ds-spacings--medium;
+
+    @include breakpoint('tablet') {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .EditorialWysiwyg {
+      margin-inline-end: auto;
+    }
+
+    button {
+      @extend %Button;
+    }
+
+    button[type="submit"] {
+      @extend %Button--primary;
+
+      &[data-drupal-selector="edit-reset"] {
+        @extend %Button--secondary;
+
+        order: -1;
+      }
+    }
+
+    button[type="reset"] {
+      @extend %Button--secondary;
+
+      order: -1;
+    }
+
+    @include breakpoint-between('mobile', 'tablet') {
+      button {
+        flex: 1 1 50%;
+      }
+    }
+
+  }
+  /* stylelint-enable */
+}

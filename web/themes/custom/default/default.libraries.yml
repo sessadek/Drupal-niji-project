@@ -1,0 +1,7 @@
+# A global library to get generated JS and CSS on all pages of the site.
+global:
+  vite: true
+  js:
+    src/main.ts: {}
+  dependencies:
+    - core/drupalSettings

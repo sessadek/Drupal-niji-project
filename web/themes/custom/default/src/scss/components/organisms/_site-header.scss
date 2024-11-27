@@ -1,0 +1,90 @@
+/* ==========================================================================
+   SiteHeader
+   ========================================================================== */
+$site-header-transition-speed: $ds-transition-speed-standard;
+$site-header-bg: $ds-colors-grayscale-white;
+$site-header-color: $ds-colors-grayscale-black;
+
+:root {
+  --drupal-displace-offset-top: 0rem; // Needs unit to work in calc() functions.
+  --site-header-padding-inline: #{$ds-spacings--medium};
+  --site-header-bg: #{$site-header-bg};
+  --site-header-height: #{px-to-rem(70)};
+  --site-header-top-height: #{px-to-rem(70)};
+  --site-header-bottom-height: #{px-to-rem(77)};
+  --site-header-top-gap: #{$ds-spacings--x-small};
+  --site-header-top-padding-inline: #{$ds-spacings--semi};
+  --site-header-border: solid #{$ds-border-color-light} #{$ds-border-width-small};
+
+  @include breakpoint('tablet') {
+    --site-header-top-gap: #{$ds-spacings--semi};
+  }
+
+  @include breakpoint('desktop') {
+    --site-header-height: #{px-to-rem(166)};
+    --site-header-top-height: #{px-to-rem(88)};
+  }
+}
+
+.SiteHeader {
+  @extend %PageWrapper;
+
+  border-block-end: var(--site-header-border);
+  background-color: var(--site-header-bg);
+  color: $site-header-color;
+  pointer-events: auto;
+
+  @include breakpoint-between('mobile', $main-menu-breakpoint-menu-display) {
+    border-block-end: 0;
+  }
+
+  &-wrapper {
+    position: sticky;
+    inset-block-start: var(--drupal-displace-offset-top);
+    z-index: 100; // Need 100 minimum to override all elements
+    isolation: isolate;
+    pointer-events: none;
+
+    &::after {
+      @include Overlay;
+
+      position: fixed;
+
+      @include breakpoint-between('mobile', $main-menu-breakpoint-menu-display) {
+        .-mainMenuIsExpanded & {
+          @include Overlay--visible;
+        }
+      }
+    }
+  }
+
+  &-top,
+  &-bottom {
+    position: relative;
+  }
+
+  &-top {
+    z-index: 2;
+    display: flex;
+    gap: var(--site-header-top-gap);
+    justify-content: space-between;
+    align-items: center;
+    height: var(--site-header-top-height);
+    padding-inline: var(--site-header-top-padding-inline);
+    border-block-end: var(--site-header-border);
+  }
+
+  &-bottom {
+    @include breakpoint($main-menu-breakpoint-menu-display) {
+      @include PageInner;
+
+      align-items: stretch;
+      height: var(--site-header-bottom-height);
+      margin-inline: auto;
+    }
+  }
+
+  &-logo {
+    margin-inline-end: auto;
+  }
+}

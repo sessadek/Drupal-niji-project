@@ -1,0 +1,150 @@
+version: "3"
+
+networks:
+  front:
+    name: ${FRONT_NETWORK}
+    external: true
+  back:
+    driver: bridge
+
+volumes:
+  database:
+  tmp:
+
+services:
+
+  mariadb:
+    container_name: ${COMPOSE_PROJECT_NAME}_mariadb
+    image: wodby/mariadb:${MARIADB_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - back
+    volumes:
+      - database:/var/lib/mysql:delegated
+    healthcheck:
+      test: "mysql --user=root --password=${MYSQL_ROOT_PASSWORD} --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 1s
+      retries: 5
+
+  php:
+    container_name: ${COMPOSE_PROJECT_NAME}_php
+    image: wodby/drupal-php:${PHP_VERSION}
+    depends_on:
+      - mariadb
+      - redis
+    environment:
+      PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S mailhog:1025
+      PHP_FPM_CLEAR_ENV: "no"
+      COMPOSER_HOME: /tmp
+      HOME: /tmp
+      APP_DOMAIN: ${APP_DOMAIN}
+      DB_HOST: ${MYSQL_HOST}
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      APP_HASH_SALT: ${APP_HASH_SALT}
+      PHP_XDEBUG_DEFAULT_ENABLE: 0
+      PHP_XDEBUG_REMOTE_CONNECT_BACK: 0
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+      PHP_XDEBUG_REMOTE_HOST: host.docker.internal
+      PHP_XDEBUG_PROFILER_OUTPUT_DIR: /tmp/xdebug/profiler
+      PHP_XDEBUG_TRACE_OUTPUT_DIR: /tmp/xdebug/traces
+      PHP_BLACKFIRE: 0
+      PHP_MAX_EXECUTION_TIME: 0
+      APP_MODE: dev
+    networks:
+      - back
+    volumes:
+      - ./:/var/www/html:cached
+      - tmp:/tmp:delegated
+
+  apache:
+    container_name: ${COMPOSE_PROJECT_NAME}_apache
+    image: wodby/apache:${APACHE_VERSION}
+    depends_on:
+      - php
+    environment:
+      APACHE_LOG_LEVEL: debug
+      APACHE_VHOST_PRESET: php
+      APACHE_BACKEND_HOST: ${COMPOSE_PROJECT_NAME}_php
+      APACHE_SERVER_ROOT: /var/www/html/web
+      APACHE_SERVER_NAME: ${APP_DOMAIN}
+    networks:
+      - front
+      - back
+    volumes:
+      - ./:/var/www/html:cached
+    labels:
+      traefik.enable: "true"
+      traefik.port: "80"
+      traefik.http.routers.origin.rule: "Host(`origin.${APP_DOMAIN}`)"
+      traefik.http.routers.origin.tls: "true"
+      traefik.docker.network: "${FRONT_NETWORK}"
+
+  varnish:
+    container_name: ${COMPOSE_PROJECT_NAME}_varnish
+    image: wodby/drupal-varnish:${VARNISH_VERSION}
+    depends_on:
+      - apache
+    environment:
+      VARNISH_CONFIG_PRESET: drupal
+      VARNISH_SECRET: secret
+      VARNISH_BACKEND_HOST: ${COMPOSE_PROJECT_NAME}_apache
+      VARNISH_BACKEND_PORT: 80
+    networks:
+      front:
+        aliases:
+          - "${APP_DOMAIN}"
+    labels:
+      traefik.enable: "true"
+      traefik.port: "6081"
+      traefik.http.routers.varnish.rule: "Host(`${APP_DOMAIN}`)"
+      traefik.http.routers.varnish.tls: "true"
+      traefik.docker.network: "${FRONT_NETWORK}"
+
+  redis:
+    container_name: ${COMPOSE_PROJECT_NAME}_redis
+    image: wodby/redis:${REDIS_VERSION}
+    networks:
+      - back
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 3s
+      timeout: 1s
+      retries: 5
+
+  pma:
+    container_name: ${COMPOSE_PROJECT_NAME}_pma
+    image: phpmyadmin/phpmyadmin:${PHPMYADMIN_VERSION}
+    environment:
+      PMA_HOST: ${COMPOSE_PROJECT_NAME}_mariadb
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      PHP_UPLOAD_MAX_FILESIZE: 1G
+      PHP_MAX_INPUT_VARS: 1G
+    networks:
+      - front
+      - back
+    labels:
+      traefik.enable: "true"
+      traefik.port: "80"
+      traefik.http.routers.pma.rule: "Host(`pma.${APP_DOMAIN}`)"
+      traefik.docker.network: "${FRONT_NETWORK}"
+
+  mailhog:
+    container_name: ${COMPOSE_PROJECT_NAME}_mailhog
+    image: mailhog/mailhog:${MAILHOG_VERSION}
+    networks:
+      - front
+      - back
+    labels:
+      traefik.enable: "true"
+      traefik.port: "8025"
+      traefik.http.routers.mailhog.rule: "Host(`mailhog.${APP_DOMAIN}`)"
+      traefik.docker.network: "${FRONT_NETWORK}"

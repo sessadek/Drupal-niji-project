@@ -1,0 +1,43 @@
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+:root {
+  --page-inner-margin-inline: 0rem; // need dimension for calc
+  --page-inner-padding-inline: #{$ds-spacings--medium};
+
+  @include breakpoint('desktop') {
+    --page-inner-padding-inline: #{$ds-spacings--large};
+  }
+
+  @include breakpoint('desktop-x-large') {
+    --page-inner-padding-inline: #{$ds-spacings--wide};
+  }
+
+  @include breakpoint('desktop-xx-large') {
+    --page-inner-padding-inline: 0rem; // Needs unit to work in calc() functions.
+  }
+}
+
+%PageWrapper {
+  @include PageWrapper;
+
+  &--withMarginInline {
+    @include PageWrapper--withMarginInline;
+  }
+}
+
+%PageInner {
+  @include PageInner;
+}
+
+
+
+%Theme {
+  &--light {
+    @include Theme--light;
+  }
+
+  &--dark {
+    @include Theme--dark;
+  }
+}

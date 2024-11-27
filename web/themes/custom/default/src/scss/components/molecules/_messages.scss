@@ -1,0 +1,92 @@
+/* ==========================================================================
+   Messages
+   ========================================================================== */
+:root {
+  --messages-bg-color: #{$ds-colors-grayscale-400};
+  --messages-text-color: #{$ds-text-color-black};
+  --messages-max-height: calc(100vh - var(--site-header-height));
+  --messages-close-color: #{$ds-text-color-white};
+  --messages-close-color--over: #{$ds-text-color-black};
+}
+
+.Messages {
+  @extend %Messages;
+
+  &-group {
+    @extend %Messages-group;
+
+    &-inner {
+      @extend %Messages-group-inner;
+    }
+
+    &-actions {
+      @extend %Messages-group-actions;
+    }
+
+    &.-info {
+      @extend %Messages-group--info;
+    }
+
+    &.-status {
+      @extend %Messages-group--status;
+    }
+
+    &.-warning {
+      @extend %Messages-group--warning;
+    }
+
+    &.-error {
+      @extend %Messages-group--error;
+    }
+
+    &.-center {
+      @extend %Messages-group--center;
+    }
+
+    &.-closable {
+      display: grid;
+      grid-template-rows: 1fr;
+      overflow: hidden;
+      transition: $ds-transition-closable-item;
+
+      .Messages {
+        &-group-inner {
+          position: relative;
+          overflow: hidden;
+          transition: $ds-transition-closable-item;
+        }
+
+        &-close {
+          position: absolute;
+          inset-block-start: 50%;
+          inset-inline-end: 0;
+          width: $button-icon-size;
+          color: var(--messages-close-color);
+          text-decoration: none;
+          cursor: pointer;
+          translate: 0 -50%;
+          transition: $ds-transition-speed-fast;
+
+          &::after {
+            content: '';
+            position: absolute;
+            inset: #{$ds-spacings--small * -1}; // centered square size * 2
+            background-color: currentColor;
+            mask-image: url('../images/icons/close.svg');
+            mask-position: center;
+            mask-repeat: no-repeat;
+            mask-size: contain;
+          }
+
+          &:hover {
+            color: var(--messages-close-color--hover);
+          }
+        }
+      }
+
+      &.-isClosing {
+        --height: 0 !important;
+      }
+    }
+  }
+}

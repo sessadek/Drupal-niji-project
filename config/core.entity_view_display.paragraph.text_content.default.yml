@@ -1,0 +1,33 @@
+uuid: 57b7e5be-8d0d-4aa2-8b9c-bf9aeca06b42
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.text_content.field_ctas
+    - field.field.paragraph.text_content.field_text
+    - paragraphs.paragraphs_type.text_content
+  module:
+    - entity_reference_revisions
+    - text
+id: paragraph.text_content.default
+targetEntityType: paragraph
+bundle: text_content
+mode: default
+content:
+  field_ctas:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_text:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

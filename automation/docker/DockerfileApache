@@ -1,0 +1,14 @@
+ARG APACHE_VERSION
+
+FROM wodby/apache:${APACHE_VERSION}
+
+COPY ./artifact.tar.gz /tmp/artefact.tar.gz
+
+USER root
+
+RUN \
+  tar zxfv /tmp/artefact.tar.gz -C /var/www/html > /dev/null && \
+  rm /tmp/artefact.tar.gz && \
+  chown -R wodby:wodby /var/www/html
+
+USER wodby

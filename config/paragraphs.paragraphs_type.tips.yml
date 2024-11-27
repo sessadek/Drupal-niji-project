@@ -1,0 +1,10 @@
+uuid: 25dfcb18-3229-4f72-8e87-0bee688fc485
+langcode: en
+status: true
+dependencies: {  }
+id: tips
+label: Astuce
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

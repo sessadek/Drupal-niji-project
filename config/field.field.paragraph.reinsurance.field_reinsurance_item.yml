@@ -1,0 +1,55 @@
+uuid: 50662636-1ccb-4022-ac9a-fe596e557838
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_reinsurance_item
+    - paragraphs.paragraphs_type.reinsurance
+    - paragraphs.paragraphs_type.reinsurance_item
+  module:
+    - entity_reference_revisions
+id: paragraph.reinsurance.field_reinsurance_item
+field_name: field_reinsurance_item
+entity_type: paragraph
+bundle: reinsurance
+label: 'Réassurance Items'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      reinsurance_item: reinsurance_item
+    negate: 0
+    target_bundles_drag_drop:
+      cta:
+        weight: 10
+        enabled: false
+      download:
+        weight: 11
+        enabled: false
+      downloads:
+        weight: 12
+        enabled: false
+      image_text_column:
+        weight: 13
+        enabled: false
+      media_text:
+        weight: 14
+        enabled: false
+      reinsurance:
+        weight: 15
+        enabled: false
+      reinsurance_item:
+        weight: 16
+        enabled: true
+      text:
+        weight: 17
+        enabled: false
+      text_content:
+        weight: 18
+        enabled: false
+field_type: entity_reference_revisions

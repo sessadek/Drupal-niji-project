@@ -1,0 +1,11 @@
+uuid: 751015a8-91b4-481a-9ad6-6242b7a24708
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+id: paragraph.cta_primary
+label: 'CTA primary'
+description: ''
+targetEntityType: paragraph
+cache: true

@@ -1,0 +1,144 @@
+/* ==========================================================================
+   Pager
+   ========================================================================== */
+$pager-arrow-width: px-to-rem(14);
+$pager-arrow-size: .5rem;
+$pager-active-color: $ds-colors-brand-primary-100;
+
+:root {
+  --pager-arrow-translate-x: -50%;
+  --pager-gutter: 0;
+  --pager-item-min-width: 1.5rem;
+
+  @include breakpoint('tablet') {
+    --pager-item-min-width: #{px-to-rem(36)};
+    --pager-gutter: #{$ds-spacings--small};
+  }
+}
+
+/* stylelint-disable selector-class-pattern */
+.pager { // use Drupal selector
+  &__items {
+    display: flex;
+    gap: var(--pager-gutter);
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__item {
+    @extend %TextStyle-caption;
+
+    display: flex;
+    min-width: var(--pager-item-min-width);
+
+    &--ellipsis,
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: var(--pager-item-min-width);
+      height: var(--pager-item-min-width);
+      padding: $ds-spacings--xxx-small;
+      text-align: center;
+      text-decoration: none !important;
+      white-space: nowrap;
+    }
+
+    a {
+      &:hover,
+      &:focus-visible {
+        background-color: $pager-active-color;
+      }
+    }
+
+    [aria-hidden] {
+      display: none;
+    }
+
+    &.is-active {
+      a {
+        background-color: $pager-active-color;
+        font-weight: 700;
+      }
+    }
+
+    &--first,
+    &--last,
+    &--previous,
+    &--next {
+      @extend %TextStyle-link1;
+
+      a {
+        position: relative;
+        color: var(--ds-text-color-dark);
+
+        &::before {
+          content: '';
+          flex: 0 0 var(--button-icon-size);
+          width: var(--button-icon-size);
+          aspect-ratio: .9;
+          background-color: currentColor;
+          rotate: var(--button-icon-rotate, 0deg);
+          mask-position: center;
+          mask-repeat: no-repeat;
+          mask-size: var(--button-mask-size, auto);
+          mask-image: var(--button-icon-mask-image, url('../images/icons/arrow.svg'));
+        }
+      }
+    }
+
+    &--previous,
+    &--next {
+      --pager-gutter: auto;
+
+      @include breakpoint('desktop') {
+        min-width: #{px-to-rem(156)};
+      }
+
+      a {
+        padding-inline: $ds-spacings--standard;
+
+        &::before {
+          translate: var(--_translate, 50% 0);
+        }
+      }
+
+      span {
+        @include breakpoint-between('mobile', 'desktop') {
+          @include VisuallyHidden;
+        }
+      }
+    }
+
+    &--previous {
+      --_translate: -50% 0;
+    }
+
+    &--next {
+      justify-content: flex-end;
+    }
+
+    &--first,
+    &--last {
+      --button-icon-mask-image: url('../images/icons/arrow-max.svg');
+      --pager-gutter: 0;
+    }
+
+    &--first,
+    &--previous {
+      --button-icon-rotate: 180deg;
+
+      margin-inline-end: var(--pager-gutter);
+    }
+
+    &--next,
+    &--last {
+      margin-inline-start: var(--pager-gutter);
+
+      a {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+}
+/* stylelint-enable */

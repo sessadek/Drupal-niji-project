@@ -1,0 +1,84 @@
+/* ==========================================================================
+   Tabs - Placeholders
+   ========================================================================== */
+@use 'sass:math';
+
+%Tabs {
+  --_text-decoration-thickness: #{$ds-spacings--x-small};
+
+  &-nav {
+    @extend %TextStyle-body2;
+
+    @include breakpoint-between('mobile', 'mobile-large') {
+      column-gap: $ds-spacings--standard;
+    }
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: $ds-spacings--xx-small 0;
+    margin: 0 0 $ds-spacings--x-large;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: grid;
+      flex: 0 0 var(--_width, 100%);
+      width: var(--_width, 100%);
+
+      @for $i from 2 through 3 {
+        &:first-child:nth-last-child(#{$i}) {
+          &,
+          & ~ li {
+            --_width: #{math.div(100%, $i)};
+          }
+        }
+      }
+    }
+
+    a {
+      --_scale: 1 0;
+      --_speed: #{$ds-transition-speed-standard};
+
+      position: relative;
+      display: grid;
+      place-items: center center;
+      padding: $ds-spacings--medium;
+      text-align: center;
+      transition: color var(--_speed);
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 100% 0 auto;
+        height: var(--_text-decoration-thickness);
+        background: currentColor;
+        scale: var(--_scale);
+        transition: scale var(--_speed);
+      }
+
+      /* stylelint-disable selector-class-pattern */
+      &:is(:hover, :focus-visible),
+      &[aria-selected="true"],
+      &.is-active {
+        --_scale: 1;
+
+        color: $ds-colors-brand-primary;
+      }
+      /* stylelint-enable */
+    }
+
+    &--bordered {
+      position: relative;
+      isolation: isolate;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 100% 0 auto;
+        z-index: -1;
+        margin-block-start: calc(var(--_text-decoration-thickness) / 2 - #{$ds-border-width-small});
+        border-block-end: solid $ds-border-width-small $ds-colors-grayscale-200;
+      }
+    }
+  }
+}

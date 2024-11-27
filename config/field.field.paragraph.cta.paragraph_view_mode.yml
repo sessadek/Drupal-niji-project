@@ -1,0 +1,21 @@
+uuid: f3eef2ea-ce16-4bdb-9b0b-fda69c86297e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.paragraph_view_mode
+    - paragraphs.paragraphs_type.cta
+  module:
+    - paragraph_view_mode
+id: paragraph.cta.paragraph_view_mode
+field_name: paragraph_view_mode
+entity_type: paragraph
+bundle: cta
+label: 'Paragraph view mode'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: paragraph_view_mode

@@ -1,0 +1,19 @@
+uuid: 5460dbc5-f165-48b9-aec7-65fa606ebcc1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_prefix
+    - paragraphs.paragraphs_type.tips
+id: paragraph.tips.field_prefix
+field_name: field_prefix
+entity_type: paragraph
+bundle: tips
+label: 'Préfixe astuce'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

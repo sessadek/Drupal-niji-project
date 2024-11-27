@@ -1,0 +1,51 @@
+uuid: e795388a-c99a-4f24-8a4b-fb2b245c0041
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.cta_secondary
+    - field.field.paragraph.homepage_hero_banner.field_link
+    - field.field.paragraph.homepage_hero_banner.field_media
+    - field.field.paragraph.homepage_hero_banner.field_required_link
+    - field.field.paragraph.homepage_hero_banner.field_text_level_1
+    - field.field.paragraph.homepage_hero_banner.field_text_level_2
+    - field.field.paragraph.homepage_hero_banner.field_text_level_3
+    - field.field.paragraph.homepage_hero_banner.field_uppercase
+    - paragraphs.paragraphs_type.homepage_hero_banner
+  module:
+    - link
+id: paragraph.homepage_hero_banner.cta_secondary
+targetEntityType: paragraph
+bundle: homepage_hero_banner
+mode: cta_secondary
+content:
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_required_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_media: true
+  field_text_level_1: true
+  field_text_level_2: true
+  field_text_level_3: true
+  field_uppercase: true
